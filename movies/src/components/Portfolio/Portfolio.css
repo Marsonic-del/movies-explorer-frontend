@@ -1,0 +1,130 @@
+.portfolio {
+    margin-top: 96px;
+}
+
+.portfolio__heading {
+    margin: 0 0 45px 0;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 1.11;
+    color: #8B8B8B;
+    text-align: start;
+}
+
+.portfolio__list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.portfolio__item {
+    padding-bottom: 8px;
+    border-bottom: 1px solid #424242;
+}
+
+.portfolio__item:last-of-type {
+    border-bottom: 0;
+}
+
+.portfolio__project {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.portfolio__project-name {
+    font-weight: normal;
+    font-size: 30px;
+    line-height: 1.67;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.portfolio__project-link {
+    width: 30px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity .25s linear;
+}
+
+.portfolio__project-link:hover {
+    opacity: .8;
+}
+
+.portfolio__project-image {}
+
+@media screen and (max-width: 768px) {
+    .portfolio {
+        margin-top: 90px;
+    }
+    
+    .portfolio__heading {
+        margin-bottom: 50px;
+    }
+    
+    .portfolio__list {}
+    
+    .portfolio__item {
+        padding-bottom: 19px;
+        border-bottom: 1px solid #E6E6E6;
+    }
+    
+    .portfolio__item:last-of-type {
+        border-bottom: 0;
+    }
+    
+    .portfolio__project {}
+    
+    .portfolio__project-name {
+        font-size: 28px;
+        line-height: 1.79;
+    }
+    
+    .portfolio__project-link {
+        width: 27px;
+    }
+    
+    .portfolio__project-image {}
+}
+
+@media screen and (max-width: 320px) {
+    .portfolio {
+        margin-top: 69px;
+    }
+    
+    .portfolio__heading {
+        font-size: 14px;
+        line-height: 1.43;
+        color: #A0A0A0;
+        margin-bottom: 40px;
+    }
+    
+    .portfolio__list {}
+    
+    .portfolio__item {
+        margin-bottom: 20px;
+    }
+    
+    .portfolio__item:last-of-type {
+        border-bottom: 0;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .portfolio__project {}
+    
+    .portfolio__project-name {
+        font-size: 18px;
+        line-height: 1.56;
+    }
+    
+    .portfolio__project-link {
+        width: 18px;
+        height: 28px;
+    }
+    
+    .portfolio__project-image {}
+}
