@@ -1,14 +1,12 @@
 import './MovieCard.css';
 import React from 'react';
-import { useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import saveFilmButton from '../../images/saveFilmButton.svg';
 import savedFilmButton from '../../images/savedFilmButton.svg';
 import removeSavedFilm from '../../images/removeSavedFilm.svg';
 
-function MovieCard() {
+function MovieCard({isSaved}) {
     const { path } = useRouteMatch();
-    const [isSaved, setIsSaved] = useState(false);
     console.log(path)
     return(
         <article className="card">

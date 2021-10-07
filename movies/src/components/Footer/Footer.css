@@ -38,6 +38,7 @@
     align-items: center;
     margin: 0;
     padding: 0;
+    list-style: none;
 }
 .footer__date {
     font-size: 13px;
