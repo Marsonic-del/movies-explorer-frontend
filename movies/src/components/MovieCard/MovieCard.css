@@ -6,7 +6,7 @@
     height: 200px;
     width: 100%;
     margin: 0;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
 }
 .card__heading {
@@ -23,13 +23,7 @@
 .card__button-save {
     width: 100px;
     height: 29px;
-    /*background-color: #313131;*/
     border-radius: 30px;
-    /*font-size: 12px;
-    line-height: 0.92;
-    font-weight: normal;
-    color: #FFFFFF;
-    text-align: center;*/
     border: 0;
     cursor: pointer;
     transition: opacity .25s linear;
@@ -38,14 +32,14 @@
 .card__button-save:hover {
     opacity: .8;
 }
-/*.card__button-save_active {
-    background-color: #EE3465;
-}*/
+
 .card__movie-info_type_name {
     font-weight: 500;
     font-size: 15px;
     margin-left: 18px;
     color: #FFFFFF;
+    margin-right: 18px;
+    text-align: left;
 }
 .card__movie-info {
     font-style: normal;

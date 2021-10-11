@@ -11,21 +11,30 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import Page404 from '../Page404/Page404';
 import Menu from '../Menu/Menu';
+import MoviesApi from '../../utils/MoviesApi';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(true);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMenuActive, setIsMenuActive] = useState(false);
+  const [movies, setMovies] = useState([]);
+  const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
   const menuObj = {isMenuActive, setIsMenuActive};
   useEffect(() => {
     const handleWindowResize = (e) => {
       setWindowWidth(window.innerWidth);
     };
     window.addEventListener('resize', handleWindowResize);
-    return () => {
-      window.removeEventListener('resize', handleWindowResize);
-    }
-  });
+  }, []);
+
+  useEffect(() => {
+    const moviesApi = new MoviesApi({address: moviesApiAddress})
+    moviesApi.getInitialMovies()
+      .then((movies) => {
+        setMovies(movies)
+      })
+      .catch((err) => console.log(err));
+  }, [])
     
 
   return (
@@ -39,7 +48,7 @@ function App() {
                 <Main/>
               </Route>
               <Route path="/movies">
-                <Movies/>
+                <Movies movies={movies} />
               </Route>
               <Route path="/saved-movies">
                 <SavedMovies/>
