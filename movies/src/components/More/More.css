@@ -20,6 +20,9 @@
     cursor: pointer;
     transition: opacity .25s linear;
 }
+.more__button_active {
+    display: flex;
+}
 
 .more__button:hover {
     opacity: .8;

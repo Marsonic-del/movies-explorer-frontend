@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './SearchForm.css';
 
-function SearchForm({ setAskedFilms, setShortFilm, shortFilm, movies }) {
+function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, handleFilmsToShow, setCardFilmCounter, cardFilmCounter }) {
   const [value, setValue] = useState('');
 
-  const handleSubmit = (e) => {
+   const handleSubmit = (e) => {
     e.preventDefault()
-    const searchedFilms = movies.filter(movie => {return (movie.nameRU.includes(value))})
-    setAskedFilms(searchedFilms)
+    const searchedFilms = movies.filter(movie => {return (movie.nameRU.toLowerCase().includes(value.toLowerCase()))})
+    setFilteredFilms(searchedFilms)
   };
 
     return(
@@ -20,7 +20,7 @@ function SearchForm({ setAskedFilms, setShortFilm, shortFilm, movies }) {
             </form>
             <div className="search__checkbox">
                 <label className="checkbox">Короткометражные
-                  <input type="checkbox" checked={shortFilm} onChange={() => {setShortFilm(!shortFilm)}} className="checkbox__input"></input>
+                  <input type="checkbox" checked={isShortFilm} onChange={(e) => {setIsShortFilm(!isShortFilm)}} className="checkbox__input"></input>
                   <div className="checkbox__div"></div>
                 </label>
             </div>

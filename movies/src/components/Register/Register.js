@@ -1,14 +1,30 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import './Register.css';
 import logo from '../../images/headerLogo.png'
 
-const handleFormSubmit = () => {};
-const handleNameChange = () => {};
-const handleDataChange = () => {};
+function Register({ onRegister }) {
+  const[email, setEmail] = useState('');
+  const[password, setPassword] = useState('');
+  const[name, setName] = useState('');
 
-function Register(props) {
-    return(
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+        if(name && email && password) {
+            onRegister(name, password,email)
+  }
+};
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+    return (
       <section className="register">
         <img className="header__logo header__logo_block_register" alt="Логотип" src={logo} />
         <h2 className="register__header">Добро пожаловать!</h2>
@@ -18,11 +34,11 @@ function Register(props) {
           <span className="form__error name-input-error"></span>
 
           <label for="email-input" className="form__input-name form__input-name_block_register">E-mail</label>
-          <input id="email-input"  type="email"  onChange={handleDataChange} placeholder="E-mail" className="form__input form__input_block_register" name="email" required minLength="2" maxLength="30"/>
+          <input id="email-input"  type="email"  onChange={handleEmailChange} placeholder="E-mail" className="form__input form__input_block_register" name="email" required minLength="2" maxLength="30"/>
           <span className="form__error"></span>
            
           <label for="password-input" className="form__input-name form__input-name_block_register">Пароль</label>
-          <input id="password-input"  type="email"  onChange={handleDataChange} placeholder="Пароль" className="form__input form__input_block_register" name="email" required minLength="8"/>
+          <input id="password-input"  type="password"  onChange={handlePasswordChange} placeholder="Пароль" className="form__input form__input_block_register" name="email" required minLength="8"/>
           <span className="form__error">Что-то пошло не так...</span>
            
           <button className="form__button" type="submit">Зарегистрироваться</button>

@@ -5,7 +5,7 @@ import saveFilmButton from '../../images/saveFilmButton.svg';
 import savedFilmButton from '../../images/savedFilmButton.svg';
 import removeSavedFilm from '../../images/removeSavedFilm.svg';
 
-function MovieCard({ isSaved, nameRU, duration, image, }) {
+function MovieCard({ isSaved, nameRU, duration, image, id, }) {
     const { path } = useRouteMatch();
     const BASE_URL = 'https://api.nomoreparties.co'
     const imageUrl = `${BASE_URL}${image.url}`;
