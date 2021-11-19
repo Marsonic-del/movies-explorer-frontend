@@ -1,8 +1,7 @@
 import './App.css';
-import React from 'react';
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
-import { loggedInContext, WindowWidthContext, SetMenuActiveContext } from '../../utils/Contexts';
+import { loggedInContext, WindowWidthContext, SetMenuActiveContext, currentUserContext } from '../../utils/Contexts';
 import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Main from '../Main/Main';
@@ -12,13 +11,17 @@ import Login from '../Login/Login';
 import Page404 from '../Page404/Page404';
 import Menu from '../Menu/Menu';
 import MoviesApi from '../../utils/MoviesApi';
-import * as mainApi from '../../utils/MainApi'
+import * as mainApi from '../../utils/MainApi';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isMenuActive, setIsMenuActive] = useState(false);
   const [movies, setMovies] = useState([]);
+  const [currentUser, setCurrentUser] = useState({});
+  const [isShortFilm, setIsShortFilm] = useState(false);
+  const [savedMovies, setSavedMovies] = useState([]);
+
   const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
   const menuObj = {isMenuActive, setIsMenuActive};
   const history = useHistory();
@@ -39,11 +42,40 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if(jwt) {
+      mainApi.getContent(jwt)
+        .then((res) => {
+          if(res) {
+            const userData = {
+              name: res.data.name,
+              email: res.data.email
+            }
+            setLoggedIn(true);
+            setCurrentUser(userData)
+          }
+        })
+        .catch(err => console.log(err))
+    }
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt')
+    mainApi.getSavedMovies(token)
+      .then((movies) => {
+        console.log(movies)
+        setSavedMovies(movies.data)
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   function handleAuthorize(password, email) {
     mainApi.authorize(password, email)
       .then((data) => {
-        if(data.token) {
+        if(data.token && data.userData) {
           localStorage.setItem('jwt', data.token)
+          setCurrentUser(data.userData)
           setLoggedIn(true)
           history.push("/movies");
         }
@@ -61,36 +93,54 @@ function App() {
     .catch(err => console.log(err))
   }
 
+  const handleUpdateUser = (data) => {
+    const token = localStorage.getItem('jwt')
+    mainApi.editProfile(data, token)
+      .then(data => {
+        setCurrentUser({ name: data.userData.name, email: data.userData.email })
+      })
+      .catch((err) => console.log(err)) 
+  }
+
+  const handleExit = () => {
+    setLoggedIn(false);
+    localStorage.removeItem('jwt');
+    setCurrentUser({})
+    history.push('/');
+  }
+
   return (
     <loggedInContext.Provider value={loggedIn}>
       <WindowWidthContext.Provider value={windowWidth}>
         <SetMenuActiveContext.Provider value={menuObj}>
-          <div className="App">
-            <Menu/>
-            <Switch>
-              <Route exact path="/">
-                <Main/>
-              </Route>
-              <Route path="/movies">
-                <Movies movies={movies} />
-              </Route>
-              <Route path="/saved-movies">
-                <SavedMovies/>
-              </Route>
-              <Route path="/profile">
-                <Profile/>
-              </Route>
-              <Route path="/signin">
-                <Login onAuthorize={handleAuthorize}/>
-              </Route>
-              <Route path="/signup">
-                <Register onRegister={handleRegister}/>
-              </Route>
-              <Route path="*">
-                <Page404/>
-              </Route>
+          <currentUserContext.Provider value={currentUser}>
+            <div className="App">
+              <Menu/>
+              <Switch>
+                <Route exact path="/">
+                  <Main/>
+                </Route>
+                <Route path="/movies">
+                  <Movies movies={movies} isShortFilm={isShortFilm} setIsShortFilm={setIsShortFilm} savedMovies={savedMovies} setSavedMovies={setSavedMovies} />
+                </Route>
+                <Route path="/saved-movies">
+                  <SavedMovies savedMovies={savedMovies} setSavedMovies={setSavedMovies} />
+                </Route>
+                <Route path="/profile">
+                  <Profile onUpdateUser={handleUpdateUser} onExit={handleExit}/>
+                </Route>
+                <Route path="/signin">
+                  <Login onAuthorize={handleAuthorize}/>
+                </Route>
+                <Route path="/signup">
+                  <Register onRegister={handleRegister}/>
+                </Route>
+                <Route path="*">
+                  <Page404/>
+                </Route>
               </Switch>
-          </div>
+            </div>
+          </currentUserContext.Provider>
         </SetMenuActiveContext.Provider>
       </WindowWidthContext.Provider>
     </loggedInContext.Provider>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './SearchForm.css';
 
-function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, handleFilmsToShow, setCardFilmCounter, cardFilmCounter }) {
+function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, }) {
   const [value, setValue] = useState('');
 
    const handleSubmit = (e) => {

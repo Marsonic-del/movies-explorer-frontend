@@ -100,8 +100,7 @@
     margin-bottom: 0;
 }
 
-.form__link_type_logout {
-    font-weight: 500;
+.form__link-button_type_logout {
     color: #EE3465;
 }
 

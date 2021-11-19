@@ -8,11 +8,9 @@ import Preloader from '../Preloader/Preloader';
 import Footer from '../Footer/Footer';
 import { handleFilmsToShow, handleMoreClick } from '../../utils/MovieHandler';
 
-function Movies({ movies }) {
+function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies }) {
     const [filteredFilms, setFilteredFilms] = useState([]);
-    const [isShortFilm, setIsShortFilm] = useState(false);
     const [moreOn, setMoreOn] = useState(false);
-    //const [isMoreClicked, setIsMoreClicked] = useState(false);
     const [filmsToShow, setFilmsToShow] = useState([])
 
     const handleMoreButtonClick = () => {
@@ -31,7 +29,7 @@ function Movies({ movies }) {
             <Header/>
             <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={movies} handleFilmsToShow={handleFilmsToShow} />
 
-            { filteredFilms && <MoviesCardList filmsToShow={filmsToShow} shortFilm={isShortFilm} />}
+            <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} />
 
             { moreOn && <More handleMoreButtonClick={handleMoreButtonClick}/> }
             <Footer/>
