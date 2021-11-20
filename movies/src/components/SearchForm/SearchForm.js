@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './SearchForm.css';
+import { handleSearch, } from '../../utils/MovieHandler'
 
 function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, }) {
   const [value, setValue] = useState('');
 
    const handleSubmit = (e) => {
     e.preventDefault()
-    const searchedFilms = movies.filter(movie => {return (movie.nameRU.toLowerCase().includes(value.toLowerCase()))})
-    setFilteredFilms(searchedFilms)
+    handleSearch(movies, setFilteredFilms, value)
   };
 
     return(

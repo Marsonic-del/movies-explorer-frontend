@@ -12,6 +12,7 @@ import Page404 from '../Page404/Page404';
 import Menu from '../Menu/Menu';
 import MoviesApi from '../../utils/MoviesApi';
 import * as mainApi from '../../utils/MainApi';
+import { transformMovies } from '../../utils/MovieHandler';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -37,7 +38,9 @@ function App() {
     const moviesApi = new MoviesApi({address: moviesApiAddress})
     moviesApi.getInitialMovies()
       .then((movies) => {
-        setMovies(movies)
+        const transformedMovies = transformMovies(movies);
+        console.log(transformedMovies)
+        setMovies(transformedMovies)
       })
       .catch((err) => console.log(err));
   }, []);
@@ -64,7 +67,6 @@ function App() {
     const token = localStorage.getItem('jwt')
     mainApi.getSavedMovies(token)
       .then((movies) => {
-        console.log(movies)
         setSavedMovies(movies.data)
       })
       .catch((err) => console.log(err));

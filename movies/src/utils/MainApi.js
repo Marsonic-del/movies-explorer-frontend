@@ -61,7 +61,6 @@ export const editProfile = (data, token) => {
   }
 
   export const removeMovie = (movieId, token) => {
-    console.log(movieId)
     return fetch(`${ BASE_URL }/movies/${movieId}`, {
       method: 'DELETE',
       headers: {
@@ -96,7 +95,7 @@ export const editProfile = (data, token) => {
     .then((res) => checkResponse(res))
   };
 
-  const saveMovies = (token, setSavedMovies, setIsSaved) => {
+  const saveMovies = (token, setSavedMovies) => {
     getSavedMovies(token)
       .then((movies) => {
         setSavedMovies(movies.data)
@@ -104,15 +103,17 @@ export const editProfile = (data, token) => {
       .catch((err) => console.log(err));
   }
 
+  export const deleteMovie = (film, setSavedMovies) => {
+    const token = localStorage.getItem('jwt');
+    removeMovie(film._id, token)
+      .then(() => saveMovies(token, setSavedMovies))
+      .catch(err => console.log(err))
+  }
+
   export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, savedMovies) => {
       const token = localStorage.getItem('jwt');
-      const movie = { ...film, trailer: film.trailerLink, image: film.image.url, thumbnail: film.image.formats.thumbnail.url, movieId: film.id, };
-      delete movie.id;
-      delete movie.trailerLink;
-      delete movie.created_at;
-      delete movie.updated_at;
       if(isSaved) {
-        const movieToRemove = savedMovies.find(f => f.movieId === film.id)
+        const movieToRemove = savedMovies.find(f => f.movieId === film.movieId)
         removeMovie(movieToRemove._id, token)
           .then(res => {
             saveMovies(token, setSavedMovies, setIsSaved)
@@ -121,7 +122,7 @@ export const editProfile = (data, token) => {
           .catch(err => console.log(err))
       }
       else {
-        saveMovie(movie, token)
+        saveMovie(film, token)
           .then((res) => {
             if(res) {
               saveMovies(token, setSavedMovies, setIsSaved)

@@ -1,4 +1,4 @@
-export const movieCounter = () => {
+const movieCounter = () => {
     if(window.innerWidth <= 480) {
         return {
             filmCounter: 5,
@@ -49,4 +49,28 @@ export const handleMoreClick = (filmsToShow, filteredFilms, setFilmsToShow, setM
         setFilmsToShow(moviesToShow)
         setMoreOn(false)
     }
-}
+};
+
+export const handleSearch = (movies, setFilteredFilms, value) => {
+    const searchedFilms = movies.filter(movie => {return (movie.nameRU.toLowerCase().includes(value.toLowerCase()))})
+    setFilteredFilms(searchedFilms)
+};
+
+export const transformMovies = (films) => {
+    const movies = films.map(film => {
+      const movie = { ...film, trailer: film.trailerLink, image: film.image.url, thumbnail: film.image.formats.thumbnail.url, movieId: film.id, };
+      delete movie.id;
+      delete movie.trailerLink;
+      delete movie.created_at;
+      delete movie.updated_at;
+      return movie;
+    })
+    return movies;
+};
+
+export const handleFilmIsSaved = (film, savedMovies, setIsSaved) => {
+    const movie = savedMovies.find(f => f.movieId === film.movieId) 
+    if(movie) {
+        setIsSaved(true);
+    }
+};
