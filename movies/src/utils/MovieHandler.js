@@ -45,7 +45,6 @@ export const handleMoreClick = (filmsToShow, filteredFilms, setFilmsToShow, setM
         setFilmsToShow(moviesToShow.slice(0, (filmsToShow.length + filmRow)))
     }
     else {
-        
         setFilmsToShow(moviesToShow)
         setMoreOn(false)
     }
@@ -72,5 +71,27 @@ export const handleFilmIsSaved = (film, savedMovies, setIsSaved) => {
     const movie = savedMovies.find(f => f.movieId === film.movieId) 
     if(movie) {
         setIsSaved(true);
+    }
+};
+
+export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, setFilmsToShow) => {
+    const shortFilmDuration = 40;
+    if(filteredFilms.length > 0) {
+        if(isShortFilm) {
+            const shortFilms = filteredFilms.filter(film => film.duration <= shortFilmDuration);
+            setFilmsToShow(shortFilms);
+        }
+        else {
+            setFilmsToShow(filteredFilms);
+        }
+    }
+    else {
+        if(isShortFilm) {
+            const shortFilms = savedMovies.filter(film => film.duration <= shortFilmDuration);
+            setFilmsToShow(shortFilms);
+        }
+        else {
+            setFilmsToShow(savedMovies);
+        }
     }
 };

@@ -4,15 +4,26 @@ import Header from '../Header/Header';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Footer from '../Footer/Footer';
-import * as mainApi from '../../utils/MainApi';
+import { handleSearch, handleSavedFilmsToShow } from '../../utils/MovieHandler';
 
-function SavedMovies({ savedMovies, setSavedMovies }) {
+function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm }) {
+    const [filteredFilms, setFilteredFilms] = useState([]);
+    const [filmsToShow, setFilmsToShow] = useState([]);
+    
+
+    React.useEffect(() => {
+        handleSavedFilmsToShow(filteredFilms, savedMovies, isShortFilm, setFilmsToShow)
+    }, [filteredFilms, isShortFilm, savedMovies])
+
     return(
         <section className="saved-movies">
             <Header/>
-            <SearchForm/>
-            <MoviesCardList filmsToShow={savedMovies} setSavedMovies={setSavedMovies} />
+
+            <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={savedMovies} handleSearch={handleSearch} />
+
+            <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} />
             <div className="savedivider"></div>
+
             <Footer/>
         </section>
     );

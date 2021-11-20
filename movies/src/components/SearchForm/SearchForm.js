@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import './SearchForm.css';
-import { handleSearch, } from '../../utils/MovieHandler'
 
-function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, }) {
+function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, handleSearch, }) {
   const [value, setValue] = useState('');
 
    const handleSubmit = (e) => {

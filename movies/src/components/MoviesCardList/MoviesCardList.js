@@ -3,7 +3,6 @@ import React from 'react';
 import MovieCard from '../MovieCard/MovieCard';
 
 function MoviesCardList({ filmsToShow, setSavedMovies, savedMovies }) {
-  
     return(
         <section className="cards">
             <ul className="cards__list">

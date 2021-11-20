@@ -39,7 +39,6 @@ function App() {
     moviesApi.getInitialMovies()
       .then((movies) => {
         const transformedMovies = transformMovies(movies);
-        console.log(transformedMovies)
         setMovies(transformedMovies)
       })
       .catch((err) => console.log(err));
@@ -126,7 +125,7 @@ function App() {
                   <Movies movies={movies} isShortFilm={isShortFilm} setIsShortFilm={setIsShortFilm} savedMovies={savedMovies} setSavedMovies={setSavedMovies} />
                 </Route>
                 <Route path="/saved-movies">
-                  <SavedMovies savedMovies={savedMovies} setSavedMovies={setSavedMovies} />
+                  <SavedMovies savedMovies={savedMovies} setSavedMovies={setSavedMovies} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} />
                 </Route>
                 <Route path="/profile">
                   <Profile onUpdateUser={handleUpdateUser} onExit={handleExit}/>

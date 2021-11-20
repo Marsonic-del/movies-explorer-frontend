@@ -6,12 +6,12 @@ import More from '../More/More';
 import Header from '../Header/Header';
 import Preloader from '../Preloader/Preloader';
 import Footer from '../Footer/Footer';
-import { handleFilmsToShow, handleMoreClick } from '../../utils/MovieHandler';
+import { handleFilmsToShow, handleMoreClick, handleSearch } from '../../utils/MovieHandler';
 
-function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies }) {
+function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies, }) {
     const [filteredFilms, setFilteredFilms] = useState([]);
+    const [filmsToShow, setFilmsToShow] = useState([]);
     const [moreOn, setMoreOn] = useState(false);
-    const [filmsToShow, setFilmsToShow] = useState([])
 
     const handleMoreButtonClick = () => {
         handleMoreClick(filmsToShow, filteredFilms, setFilmsToShow, setMoreOn, isShortFilm)
@@ -19,15 +19,13 @@ function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovi
     
     React.useEffect(() => {
         handleFilmsToShow(filteredFilms, setFilmsToShow, setMoreOn, isShortFilm);
-    }, [filteredFilms, isShortFilm])
-
-    
+    }, [filteredFilms, isShortFilm, setFilmsToShow])
 
     return(
         <section className="movies">
             <Preloader/>
             <Header/>
-            <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={movies} handleFilmsToShow={handleFilmsToShow} />
+            <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={movies} handleSearch={handleSearch} />
 
             <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} />
 
