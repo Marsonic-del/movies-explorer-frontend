@@ -22,6 +22,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [isShortFilm, setIsShortFilm] = useState(false);
   const [savedMovies, setSavedMovies] = useState([]);
+  const [filteredFilms, setFilteredFilms] = useState([]);
 
   const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
   const menuObj = {isMenuActive, setIsMenuActive};
@@ -31,17 +32,39 @@ function App() {
     const handleWindowResize = (e) => {
       setWindowWidth(window.innerWidth);
     };
+    
     window.addEventListener('resize', handleWindowResize);
-  }, []);
+    window.addEventListener('beforeunload', (e) => {
+      e.preventDefault();
+      localStorage.setItem('filteredFilms', JSON.stringify(filteredFilms));
+    })
+
+    return () => {
+      window.removeEventListener('resize', handleWindowResize)
+      window.removeEventListener('beforeunload', (e) => {
+        e.preventDefault();
+        localStorage.setItem('filteredFilms', JSON.stringify(filteredFilms));
+      })
+    }
+  }, [filteredFilms]);
 
   useEffect(() => {
-    const moviesApi = new MoviesApi({address: moviesApiAddress})
-    moviesApi.getInitialMovies()
-      .then((movies) => {
-        const transformedMovies = transformMovies(movies);
-        setMovies(transformedMovies)
-      })
-      .catch((err) => console.log(err));
+    const initialMovies = localStorage.getItem('initialMovies');
+    if(initialMovies) {
+      setMovies(JSON.parse(initialMovies))
+      const films = localStorage.getItem('filteredFilms')
+      console.log(films)
+      setFilteredFilms(JSON.parse(films))
+    }
+    else {
+      const moviesApi = new MoviesApi({address: moviesApiAddress})
+      moviesApi.getInitialMovies()
+        .then((movies) => {
+          const transformedMovies = transformMovies(movies);
+          setMovies(transformedMovies)
+          localStorage.setItem('initialMovies', JSON.stringify(transformedMovies));
+        })
+        .catch((err) => console.log(err));}
   }, []);
 
   useEffect(() => {
@@ -107,6 +130,8 @@ function App() {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
     setCurrentUser({})
+    setFilteredFilms([])
+    setSavedMovies([])
     history.push('/');
   }
 
@@ -122,7 +147,7 @@ function App() {
                   <Main/>
                 </Route>
                 <Route path="/movies">
-                  <Movies movies={movies} isShortFilm={isShortFilm} setIsShortFilm={setIsShortFilm} savedMovies={savedMovies} setSavedMovies={setSavedMovies} />
+                  <Movies movies={movies} isShortFilm={isShortFilm} setIsShortFilm={setIsShortFilm} savedMovies={savedMovies} setSavedMovies={setSavedMovies} filteredFilms={filteredFilms} setFilteredFilms={setFilteredFilms} />
                 </Route>
                 <Route path="/saved-movies">
                   <SavedMovies savedMovies={savedMovies} setSavedMovies={setSavedMovies} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} />

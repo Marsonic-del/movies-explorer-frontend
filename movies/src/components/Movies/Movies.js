@@ -8,8 +8,8 @@ import Preloader from '../Preloader/Preloader';
 import Footer from '../Footer/Footer';
 import { handleFilmsToShow, handleMoreClick, handleSearch } from '../../utils/MovieHandler';
 
-function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies, }) {
-    const [filteredFilms, setFilteredFilms] = useState([]);
+function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies, filteredFilms, setFilteredFilms }) {
+    
     const [filmsToShow, setFilmsToShow] = useState([]);
     const [moreOn, setMoreOn] = useState(false);
 
