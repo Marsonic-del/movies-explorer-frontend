@@ -1,3 +1,7 @@
+import MoviesApi from '../utils/MoviesApi';
+
+const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
+
 const movieCounter = () => {
     if(window.innerWidth <= 480) {
         return {
@@ -50,9 +54,29 @@ export const handleMoreClick = (filmsToShow, filteredFilms, setFilmsToShow, setM
     }
 };
 
+export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesSucces) => {
+    const initialMovies = localStorage.getItem('initialMovies');
+    if(initialMovies) {
+      setMovies(JSON.parse(initialMovies))
+      setIsInitialMoviesSucces(true)
+      const films = localStorage.getItem('filteredFilms')
+      films && setFilteredFilms(JSON.parse(films))
+    }
+    else {
+      const moviesApi = new MoviesApi({address: moviesApiAddress})
+      moviesApi.getInitialMovies()
+        .then((movies) => {
+          const transformedMovies = transformMovies(movies);
+          setMovies(transformedMovies)
+          setIsInitialMoviesSucces(true)
+          localStorage.setItem('initialMovies', JSON.stringify(transformedMovies));
+        })
+        .catch((err) => console.log(err));}
+};
+
 export const handleSearch = (movies, setFilteredFilms, value) => {
-    const searchedFilms = movies.filter(movie => {return (movie.nameRU.toLowerCase().includes(value.toLowerCase()))})
-    setFilteredFilms(searchedFilms)
+    const searchedFilms = movies.filter(movie => {return (movie.nameRU.toLowerCase().includes(value.toLowerCase()))});
+    setFilteredFilms(searchedFilms);
 };
 
 export const transformMovies = (films) => {
@@ -76,7 +100,7 @@ export const handleFilmIsSaved = (film, savedMovies, setIsSaved) => {
 
 export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, setFilmsToShow) => {
     const shortFilmDuration = 40;
-    if(filteredFilms.length > 0) {
+    if(filteredFilms) {
         if(isShortFilm) {
             const shortFilms = filteredFilms.filter(film => film.duration <= shortFilmDuration);
             setFilmsToShow(shortFilms);

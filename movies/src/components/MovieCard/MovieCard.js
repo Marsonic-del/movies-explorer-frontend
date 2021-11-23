@@ -1,6 +1,6 @@
 import './MovieCard.css';
 import React, { useState, useEffect } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import saveFilmButton from '../../images/saveFilmButton.svg';
 import savedFilmButton from '../../images/savedFilmButton.svg';
 import removeSavedFilm from '../../images/removeSavedFilm.svg';
@@ -9,36 +9,41 @@ import { handleFilmIsSaved } from '../../utils/MovieHandler';
 
 function MovieCard({ film, setSavedMovies, savedMovies }) {
     const [isSaved, setIsSaved] = useState(false);
-    const { path } = useRouteMatch();
+    
 
     const BASE_URL = 'https://api.nomoreparties.co'
     const imageUrl = `${BASE_URL}${film.image}`;
+    const location = useLocation();
 
     const handleMovieSaving = (e) => {
-      if(path === "/movies") {
+      if(location.pathname === "/movies") {
         mainApi.handleMovieToSave(film, setIsSaved, isSaved, setSavedMovies, savedMovies)
       }
-      if(path === "/saved-movies") {
+      if(location.pathname === "/saved-movies") {
         mainApi.deleteMovie(film, setSavedMovies);
       }
     }
 
+    const trailerRedirect = (e)  => {
+      e.target.className !== "card__button-save" && window.open(film.trailer);
+    }
+
     useEffect(() => {
-      if(path === '/movies') {
+      if(location.pathname === '/movies') {
         handleFilmIsSaved(film, savedMovies, setIsSaved);
       }
-    }, [film, path, savedMovies])
+    }, [film, location.pathname, savedMovies])
 
     return(
-        <article className="card">
+        <article className="card" onClick={trailerRedirect}>
           <div className="card__heading">
             <p className="card__movie-info card__movie-info_type_name">{film.nameRU}</p>
             <p className="card__movie-info card__movie-info_type_duration">{`${film.duration} минут`}</p>
           </div>
           <img className="card__image" src={imageUrl} alt="Обложка фильма"/>
           <div className="card__options">
-            {path === "/movies" && <img className="card__button-save" src={isSaved ? savedFilmButton : saveFilmButton} onClick={handleMovieSaving} alt={isSaved ? "Не сохранять" : "Сохранить"}/>}
-            {path === "/saved-movies" && <img className="card__button-save" src={removeSavedFilm} onClick={handleMovieSaving} alt="Удалить"/>}
+            {location.pathname === "/movies" && <img className="card__button-save" src={isSaved ? savedFilmButton : saveFilmButton} onClick={handleMovieSaving} alt={isSaved ? "Не сохранять" : "Сохранить"}/>}
+            {location.pathname === "/saved-movies" && <img className="card__button-save" src={removeSavedFilm} onClick={handleMovieSaving} alt="Удалить"/>}
           </div>
         </article>
     );

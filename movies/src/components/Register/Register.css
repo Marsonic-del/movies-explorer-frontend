@@ -52,7 +52,7 @@
     line-height: 12px;
     color: #EE3465;
     align-self: flex-start;
-    display: none;
+    /*display: none;*/
     margin-top: 10px;
 }
 
@@ -73,7 +73,17 @@
     transition: opacity .25s linear;
 }
 
-.form__button:hover {
+.form__button_component_profile {
+    background-color: #202020;
+}
+
+.form__button:disabled {
+    cursor: auto;
+    opacity: .5;
+    
+}
+
+.form__button:hover:enabled {
     opacity: 0.8;
 }
 

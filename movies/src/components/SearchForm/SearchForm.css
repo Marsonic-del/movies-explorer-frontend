@@ -14,8 +14,12 @@
     flex-direction: column;
     padding-bottom: 10px;
 }
+.search-wrapper {
+    display: flex;
+}
 .search__line {
     display: flex;
+    flex-direction: column;
 }
 .search__checkbox {
     display: flex;

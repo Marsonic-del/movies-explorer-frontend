@@ -10,9 +10,10 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import Page404 from '../Page404/Page404';
 import Menu from '../Menu/Menu';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import MoviesApi from '../../utils/MoviesApi';
 import * as mainApi from '../../utils/MainApi';
-import { transformMovies } from '../../utils/MovieHandler';
+import { transformMovies, getInitialFilms } from '../../utils/MovieHandler';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -23,6 +24,7 @@ function App() {
   const [isShortFilm, setIsShortFilm] = useState(false);
   const [savedMovies, setSavedMovies] = useState([]);
   const [filteredFilms, setFilteredFilms] = useState([]);
+  const [isInitialMoviesSucces, setIsInitialMoviesSucces] = useState(false);
 
   const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
   const menuObj = {isMenuActive, setIsMenuActive};
@@ -37,6 +39,7 @@ function App() {
     window.addEventListener('beforeunload', (e) => {
       e.preventDefault();
       localStorage.setItem('filteredFilms', JSON.stringify(filteredFilms));
+      //localStorage.setItem('isInitialMoviesSucces', JSON.stringify(isInitialMoviesSucces));
     })
 
     return () => {
@@ -44,17 +47,17 @@ function App() {
       window.removeEventListener('beforeunload', (e) => {
         e.preventDefault();
         localStorage.setItem('filteredFilms', JSON.stringify(filteredFilms));
+        //localStorage.setItem('isInitialMoviesSucces', JSON.stringify(isInitialMoviesSucces));
       })
     }
   }, [filteredFilms]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const initialMovies = localStorage.getItem('initialMovies');
     if(initialMovies) {
       setMovies(JSON.parse(initialMovies))
       const films = localStorage.getItem('filteredFilms')
-      console.log(films)
-      setFilteredFilms(JSON.parse(films))
+      films && setFilteredFilms(JSON.parse(films))
     }
     else {
       const moviesApi = new MoviesApi({address: moviesApiAddress})
@@ -65,34 +68,48 @@ function App() {
           localStorage.setItem('initialMovies', JSON.stringify(transformedMovies));
         })
         .catch((err) => console.log(err));}
+  }, []);*/
+
+  useEffect(() => {
+    const films = localStorage.getItem('filteredFilms');
+    films && setFilteredFilms(JSON.parse(films));
   }, []);
 
   useEffect(() => {
+    checkToken();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt')
+    token && mainApi.getSavedMovies(token)
+      .then((movies) => {
+        setSavedMovies(movies.data)
+      })
+      .catch((err) => console.log(err));
+  }, [loggedIn]);
+
+  function checkToken() {
     const jwt = localStorage.getItem('jwt');
     if(jwt) {
-      mainApi.getContent(jwt)
+     mainApi.getContent(jwt)
         .then((res) => {
           if(res) {
             const userData = {
               name: res.data.name,
               email: res.data.email
             }
-            setLoggedIn(true);
             setCurrentUser(userData)
+            setLoggedIn(true);
           }
         })
         .catch(err => console.log(err))
     }
-  }, []);
+  }
 
-  useEffect(() => {
-    const token = localStorage.getItem('jwt')
-    mainApi.getSavedMovies(token)
-      .then((movies) => {
-        setSavedMovies(movies.data)
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  function getInitialMovies() {
+    console.log(isInitialMoviesSucces)
+    !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces);
+  };
 
   function handleAuthorize(password, email) {
     mainApi.authorize(password, email)
@@ -132,6 +149,7 @@ function App() {
     setCurrentUser({})
     setFilteredFilms([])
     setSavedMovies([])
+    setIsInitialMoviesSucces(false)
     history.push('/');
   }
 
@@ -143,17 +161,35 @@ function App() {
             <div className="App">
               <Menu/>
               <Switch>
+                <ProtectedRoute
+                    path="/movies"
+                    component={Movies}
+                    movies={movies}
+                    isShortFilm={isShortFilm}
+                    setIsShortFilm={setIsShortFilm}
+                    savedMovies={savedMovies}
+                    setSavedMovies={setSavedMovies}
+                    filteredFilms={filteredFilms}
+                    setFilteredFilms={setFilteredFilms}
+                    getInitialMovies={getInitialMovies}
+                    checkToken={checkToken}
+                />
+                <ProtectedRoute
+                    path="/saved-movies"
+                    component={SavedMovies}
+                    isShortFilm={isShortFilm}
+                    setIsShortFilm={setIsShortFilm}
+                    savedMovies={savedMovies}
+                    setSavedMovies={setSavedMovies}
+                />
+                <ProtectedRoute
+                    path="/profile"
+                    component={Profile}
+                    onUpdateUser={handleUpdateUser}
+                    onExit={handleExit}
+                />
                 <Route exact path="/">
                   <Main/>
-                </Route>
-                <Route path="/movies">
-                  <Movies movies={movies} isShortFilm={isShortFilm} setIsShortFilm={setIsShortFilm} savedMovies={savedMovies} setSavedMovies={setSavedMovies} filteredFilms={filteredFilms} setFilteredFilms={setFilteredFilms} />
-                </Route>
-                <Route path="/saved-movies">
-                  <SavedMovies savedMovies={savedMovies} setSavedMovies={setSavedMovies} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} />
-                </Route>
-                <Route path="/profile">
-                  <Profile onUpdateUser={handleUpdateUser} onExit={handleExit}/>
                 </Route>
                 <Route path="/signin">
                   <Login onAuthorize={handleAuthorize}/>
