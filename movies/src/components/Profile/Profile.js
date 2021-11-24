@@ -5,7 +5,7 @@ import Header from '../Header/Header';
 import Preloader from '../Preloader/Preloader';
 import { useFormWithValidation } from '../../utils/FormValidator';
 
-function Profile({ onUpdateUser, onExit }) {
+function Profile({ onUpdateUser, onExit, isLoading }) {
   const currentUser = React.useContext(currentUserContext);
   //const[email, setEmail] = useState('');
   //const[name, setName] = useState('');
@@ -18,21 +18,11 @@ function Profile({ onUpdateUser, onExit }) {
       onUpdateUser({ name: values.name, email: values.email });
     }
   };
-  /*const handleNameChange = (e) => {
-    setName(e.target.value)
-  };
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value)
-  };*/
 
-  /*React.useEffect(() => {
-    setName(currentUser.name)
-    setEmail(currentUser.email)
-  },[currentUser.email, currentUser.name])*/
     return(
       <div className="profile-box">
+        <Preloader isFetching={isLoading} />
         <Header/>
-        <Preloader/>
         <section className="profile">
           <h2 className="profile__header">Привет, {currentUser.name}</h2>
           <form className="form" name="form" onSubmit={handleFormSubmit} noValidate>

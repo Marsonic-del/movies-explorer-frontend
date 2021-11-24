@@ -9,7 +9,7 @@ import Footer from '../Footer/Footer';
 import { handleFilmsToShow, handleMoreClick, handleSearch } from '../../utils/MovieHandler';
 import NothingFound from '../NothingFound/NothingFound';
 
-function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies, filteredFilms, setFilteredFilms, getInitialMovies }) {
+function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies, filteredFilms, setFilteredFilms, getInitialMovies, isLoading, wereMoviesSearched }) {
     
     const [filmsToShow, setFilmsToShow] = useState([]);
     const [moreOn, setMoreOn] = useState(false);
@@ -24,11 +24,11 @@ function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovi
 
     return(
         <section className="movies">
-            <Preloader/>
+            <Preloader isFetching={isLoading} />
             <Header/>
             <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={movies} handleSearch={handleSearch} getInitialMovies={getInitialMovies} />
 
-            {filmsToShow.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} /> : <NothingFound />}
+            {wereMoviesSearched && (filteredFilms.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} /> : <NothingFound />)} 
 
             { moreOn && <More handleMoreButtonClick={handleMoreButtonClick}/> }
             <Footer/>

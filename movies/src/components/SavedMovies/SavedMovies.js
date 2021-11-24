@@ -18,10 +18,8 @@ function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm,
 
     return(
         <section className="saved-movies">
-            { isLoading && <Preloader isFetching={isLoading} />}
-            
+           <Preloader isFetching={isLoading} />
             <Header/>
-
             <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={savedMovies} handleSearch={handleSearch} />
 
             {filmsToShow.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} /> : <NothingFound />}

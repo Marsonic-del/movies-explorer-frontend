@@ -63,13 +63,14 @@ export const handleMoreClick = (filmsToShow, filteredFilms, setFilmsToShow, setM
     }
 };
 
-export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading) => {
+export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched) => {
+    setWereMoviesSearched(true);
     const initialMovies = localStorage.getItem('initialMovies');
     if(initialMovies) {
         console.log('initial movies are in local storage')
       setMovies(JSON.parse(initialMovies))
       setIsInitialMoviesSucces(true)
-      const films = localStorage.getItem('filteredFilms')
+      const films = localStorage.getItem('storedMovies')
       films && setFilteredFilms(JSON.parse(films))
     }
     else {
@@ -122,6 +123,8 @@ export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, 
             setFilmsToShow(shortFilms);
         }
         else {
+            console.log('setFilmsToShow(filteredFilms)')
+            console.log(filteredFilms)
             setFilmsToShow(filteredFilms);
         }
     }
@@ -131,6 +134,8 @@ export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, 
             setFilmsToShow(shortFilms);
         }
         else {
+            console.log('setFilmsToShow(savedMovies)')
+            console.log(savedMovies)
             setFilmsToShow(savedMovies);
         }
     }

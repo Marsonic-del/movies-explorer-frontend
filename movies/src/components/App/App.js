@@ -30,6 +30,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [wereMoviesSearched, setWereMoviesSearched] = useState(false);
 
   const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
   const menuObj = {isMenuActive, setIsMenuActive};
@@ -43,21 +44,24 @@ function App() {
     window.addEventListener('resize', handleWindowResize);
     window.addEventListener('beforeunload', (e) => {
       e.preventDefault();
-      localStorage.setItem('filteredFilms', JSON.stringify(filteredFilms));
+      localStorage.setItem('storedMovies', JSON.stringify(filteredFilms));
     })
 
     return () => {
       window.removeEventListener('resize', handleWindowResize)
       window.removeEventListener('beforeunload', (e) => {
         e.preventDefault();
-        localStorage.setItem('filteredFilms', JSON.stringify(filteredFilms));
+        localStorage.setItem('storedMovies', JSON.stringify(filteredFilms));
       })
     }
   }, [filteredFilms]);
 
   useEffect(() => {
-    const films = localStorage.getItem('filteredFilms');
-    films && setFilteredFilms(JSON.parse(films));
+    const films = localStorage.getItem('storedMovies');
+    if(films) {
+      films && setFilteredFilms(JSON.parse(films));
+      setWereMoviesSearched(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -66,12 +70,15 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem('jwt')
-    token && setIsLoading(true) && mainApi.getSavedMovies(token)
+    if(token) {
+      setIsLoading(true)
+      mainApi.getSavedMovies(token)
       .then((movies) => {
         setSavedMovies(movies.data)
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false))
+    }
   }, [loggedIn]);
 
   function getUserData() {
@@ -98,7 +105,7 @@ function App() {
   }
 
   function getInitialMovies() {
-    !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading);
+    !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched);
   };
 
   function handleAuthorize(password, email) {
@@ -129,7 +136,6 @@ function App() {
       }
     })
     .catch(err => {
-      console.log(err)
       setErrorMessage(err)
       setIsErrorPopupOpen(true)
     })
@@ -137,12 +143,17 @@ function App() {
   }
 
   const handleUpdateUser = (data) => {
+    setIsLoading(true)
     const token = localStorage.getItem('jwt')
     mainApi.editProfile(data, token)
       .then(data => {
         setCurrentUser({ name: data.userData.name, email: data.userData.email })
       })
-      .catch((err) => console.log(err)) 
+      .catch((err) => {
+        setErrorMessage(err)
+        setIsErrorPopupOpen(true)
+      })
+      .finally(() => {setIsLoading(false)})
   }
 
   const handleExit = () => {
@@ -153,6 +164,7 @@ function App() {
     setFilteredFilms([])
     setSavedMovies([])
     setIsInitialMoviesSucces(false)
+    setWereMoviesSearched(false)
     history.push('/');
   }
 
@@ -170,7 +182,6 @@ function App() {
           <currentUserContext.Provider value={currentUser}>
             <div className="App">
               <Menu/>
-              <Preloader isFetching={isLoading} />
               <Switch>
                 <ProtectedRoute
                     path="/movies"
@@ -183,10 +194,11 @@ function App() {
                     filteredFilms={filteredFilms}
                     setFilteredFilms={setFilteredFilms}
                     getInitialMovies={getInitialMovies}
-                    getUserData
-                ={getUserData
-                }
+                    getUserData={getUserData}
                     loggedIn={loggedIn}
+                    isLoading={isLoading}
+                    wereMoviesSearched={wereMoviesSearched}
+                    setWereMoviesSearched={setWereMoviesSearched}
                 />
                 <ProtectedRoute
                     path="/saved-movies"
@@ -202,15 +214,16 @@ function App() {
                     component={Profile}
                     onUpdateUser={handleUpdateUser}
                     onExit={handleExit}
+                    isLoading={isLoading}
                 />
                 <Route exact path="/">
-                  <Main isLoading={isLoading} />
+                  <Main />
                 </Route>
                 <Route path="/signin">
                   <Login onAuthorize={handleAuthorize} isLoading={isLoading} />
                 </Route>
                 <Route path="/signup">
-                  <Register onRegister={handleRegister}/>
+                  <Register onRegister={handleRegister} isLoading={isLoading} />
                 </Route>
                 <Route path="*">
                   <Page404/>

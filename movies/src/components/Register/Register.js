@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Register.css';
 import logo from '../../images/headerLogo.png'
+import Preloader from '../Preloader/Preloader';
 import { useFormWithValidation } from '../../utils/FormValidator';
 
-function Register({ onRegister }) {
+function Register({ onRegister, isLoading }) {
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 
@@ -16,6 +17,7 @@ function Register({ onRegister }) {
 };
     return (
       <section className="register">
+        <Preloader isFetching={isLoading} />
         <img className="header__logo header__logo_block_register" alt="Логотип" src={logo} />
         <h2 className="register__header">Добро пожаловать!</h2>
         <form className="form form__register" name="form" onSubmit={handleFormSubmit} noValidate>
