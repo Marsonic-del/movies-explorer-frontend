@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Login.css';
 import logo from '../../images/headerLogo.png'
+import Preloader from '../Preloader/Preloader';
 import { useFormWithValidation } from '../../utils/FormValidator';
 
-function Login({ onAuthorize }) {
+function Login({ onAuthorize, isLoading }) {
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 
@@ -17,6 +18,7 @@ function Login({ onAuthorize }) {
   
     return(
       <section className="login">
+       { /*<Preloader isFetching={isLoading} />*/}
         <img className="header__logo header__logo_block_register" alt="Логотип" src={logo} />
         <h2 className="register__header">Рады видеть!</h2>
         <form className="form form__register" name="form" onSubmit={handleFormSubmit} noValidate>

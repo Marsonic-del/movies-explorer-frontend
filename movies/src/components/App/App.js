@@ -12,8 +12,10 @@ import Page404 from '../Page404/Page404';
 import Menu from '../Menu/Menu';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import MoviesApi from '../../utils/MoviesApi';
+import ErrorPopup from '../ErrorPopup/ErrorPopup';
 import * as mainApi from '../../utils/MainApi';
 import { transformMovies, getInitialFilms } from '../../utils/MovieHandler';
+import Preloader from '../Preloader/Preloader';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -25,6 +27,9 @@ function App() {
   const [savedMovies, setSavedMovies] = useState([]);
   const [filteredFilms, setFilteredFilms] = useState([]);
   const [isInitialMoviesSucces, setIsInitialMoviesSucces] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
   const menuObj = {isMenuActive, setIsMenuActive};
@@ -39,7 +44,6 @@ function App() {
     window.addEventListener('beforeunload', (e) => {
       e.preventDefault();
       localStorage.setItem('filteredFilms', JSON.stringify(filteredFilms));
-      //localStorage.setItem('isInitialMoviesSucces', JSON.stringify(isInitialMoviesSucces));
     })
 
     return () => {
@@ -47,28 +51,9 @@ function App() {
       window.removeEventListener('beforeunload', (e) => {
         e.preventDefault();
         localStorage.setItem('filteredFilms', JSON.stringify(filteredFilms));
-        //localStorage.setItem('isInitialMoviesSucces', JSON.stringify(isInitialMoviesSucces));
       })
     }
   }, [filteredFilms]);
-
-  /*useEffect(() => {
-    const initialMovies = localStorage.getItem('initialMovies');
-    if(initialMovies) {
-      setMovies(JSON.parse(initialMovies))
-      const films = localStorage.getItem('filteredFilms')
-      films && setFilteredFilms(JSON.parse(films))
-    }
-    else {
-      const moviesApi = new MoviesApi({address: moviesApiAddress})
-      moviesApi.getInitialMovies()
-        .then((movies) => {
-          const transformedMovies = transformMovies(movies);
-          setMovies(transformedMovies)
-          localStorage.setItem('initialMovies', JSON.stringify(transformedMovies));
-        })
-        .catch((err) => console.log(err));}
-  }, []);*/
 
   useEffect(() => {
     const films = localStorage.getItem('filteredFilms');
@@ -76,22 +61,24 @@ function App() {
   }, []);
 
   useEffect(() => {
-    checkToken();
+    getUserData();
   }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('jwt')
-    token && mainApi.getSavedMovies(token)
+    token && setIsLoading(true) && mainApi.getSavedMovies(token)
       .then((movies) => {
         setSavedMovies(movies.data)
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false))
   }, [loggedIn]);
 
-  function checkToken() {
+  function getUserData() {
     const jwt = localStorage.getItem('jwt');
     if(jwt) {
-     mainApi.getContent(jwt)
+      setIsLoading(true)
+      mainApi.getContent(jwt)
         .then((res) => {
           if(res) {
             const userData = {
@@ -102,16 +89,20 @@ function App() {
             setLoggedIn(true);
           }
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          setErrorMessage(err)
+          setIsErrorPopupOpen(true)
+        })
+        .finally(() => {setIsLoading(false)})
     }
   }
 
   function getInitialMovies() {
-    console.log(isInitialMoviesSucces)
-    !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces);
+    !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading);
   };
 
   function handleAuthorize(password, email) {
+    setIsLoading(true)
     mainApi.authorize(password, email)
       .then((data) => {
         if(data.token && data.userData) {
@@ -119,19 +110,30 @@ function App() {
           setCurrentUser(data.userData)
           setLoggedIn(true)
           history.push("/movies");
+          
         }
       })
-      .catch((err) => {console.log(err)})
+      .catch((err) => {
+        setErrorMessage(err)
+        setIsErrorPopupOpen(true)
+      })
+      .finally(() => {setIsLoading(false)})
   }
 
   const handleRegister = (name, password,email) => {
+    setIsLoading(true)
     mainApi.register(name, password,email)
     .then(res => {
       if(res) {
         handleAuthorize(password, email)
       }
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err)
+      setErrorMessage(err)
+      setIsErrorPopupOpen(true)
+    })
+    .finally(() => {setIsLoading(false)})
   }
 
   const handleUpdateUser = (data) => {
@@ -146,11 +148,19 @@ function App() {
   const handleExit = () => {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
+    localStorage.removeItem('initialMovies');
     setCurrentUser({})
     setFilteredFilms([])
     setSavedMovies([])
     setIsInitialMoviesSucces(false)
     history.push('/');
+  }
+
+  function handleClickClose(evt) {
+    const evtTarget = evt.target;
+    if (evtTarget.classList.contains('popup') || evtTarget.classList.contains('popup__button-close')) {
+      setIsErrorPopupOpen(false);
+    }
   }
 
   return (
@@ -160,6 +170,7 @@ function App() {
           <currentUserContext.Provider value={currentUser}>
             <div className="App">
               <Menu/>
+              <Preloader isFetching={isLoading} />
               <Switch>
                 <ProtectedRoute
                     path="/movies"
@@ -172,7 +183,10 @@ function App() {
                     filteredFilms={filteredFilms}
                     setFilteredFilms={setFilteredFilms}
                     getInitialMovies={getInitialMovies}
-                    checkToken={checkToken}
+                    getUserData
+                ={getUserData
+                }
+                    loggedIn={loggedIn}
                 />
                 <ProtectedRoute
                     path="/saved-movies"
@@ -181,6 +195,7 @@ function App() {
                     setIsShortFilm={setIsShortFilm}
                     savedMovies={savedMovies}
                     setSavedMovies={setSavedMovies}
+                    isLoading={isLoading}
                 />
                 <ProtectedRoute
                     path="/profile"
@@ -189,10 +204,10 @@ function App() {
                     onExit={handleExit}
                 />
                 <Route exact path="/">
-                  <Main/>
+                  <Main isLoading={isLoading} />
                 </Route>
                 <Route path="/signin">
-                  <Login onAuthorize={handleAuthorize}/>
+                  <Login onAuthorize={handleAuthorize} isLoading={isLoading} />
                 </Route>
                 <Route path="/signup">
                   <Register onRegister={handleRegister}/>
@@ -201,6 +216,7 @@ function App() {
                   <Page404/>
                 </Route>
               </Switch>
+              <ErrorPopup isOpen={isErrorPopupOpen} handleClickClose={handleClickClose} message={errorMessage} />
             </div>
           </currentUserContext.Provider>
         </SetMenuActiveContext.Provider>

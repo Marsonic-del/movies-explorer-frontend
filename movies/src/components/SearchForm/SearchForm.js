@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './SearchForm.css';
 import { useFormWithValidation } from '../../utils/FormValidator';
 
 function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, handleSearch, getInitialMovies }) {
-  //const [value, setValue] = useState('');
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 

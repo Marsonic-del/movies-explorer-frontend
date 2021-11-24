@@ -4,8 +4,8 @@ import { useLocation } from 'react-router-dom';
 import saveFilmButton from '../../images/saveFilmButton.svg';
 import savedFilmButton from '../../images/savedFilmButton.svg';
 import removeSavedFilm from '../../images/removeSavedFilm.svg';
-import * as mainApi from '../../utils/MainApi'
-import { handleFilmIsSaved } from '../../utils/MovieHandler';
+import * as mainApi from '../../utils/MainApi';
+import { handleFilmIsSaved, handleMovieToSave, deleteMovie } from '../../utils/MovieHandler';
 
 function MovieCard({ film, setSavedMovies, savedMovies }) {
     const [isSaved, setIsSaved] = useState(false);
@@ -17,10 +17,10 @@ function MovieCard({ film, setSavedMovies, savedMovies }) {
 
     const handleMovieSaving = (e) => {
       if(location.pathname === "/movies") {
-        mainApi.handleMovieToSave(film, setIsSaved, isSaved, setSavedMovies, savedMovies)
+        handleMovieToSave(film, setIsSaved, isSaved, setSavedMovies, savedMovies)
       }
       if(location.pathname === "/saved-movies") {
-        mainApi.deleteMovie(film, setSavedMovies);
+        deleteMovie(film, setSavedMovies);
       }
     }
 

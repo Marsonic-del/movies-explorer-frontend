@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import './SavedMovies.css';
 import Header from '../Header/Header';
+import Preloader from '../Preloader/Preloader';
 import SearchForm from '../SearchForm/SearchForm';
 import NothingFound from '../NothingFound/NothingFound';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Footer from '../Footer/Footer';
 import { handleSearch, handleSavedFilmsToShow } from '../../utils/MovieHandler';
 
-function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm }) {
+function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm, isLoading }) {
     const [filteredFilms, setFilteredFilms] = useState(null);
     const [filmsToShow, setFilmsToShow] = useState([]);
 
@@ -17,6 +18,8 @@ function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm 
 
     return(
         <section className="saved-movies">
+            { isLoading && <Preloader isFetching={isLoading} />}
+            
             <Header/>
 
             <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={savedMovies} handleSearch={handleSearch} />
