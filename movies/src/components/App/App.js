@@ -11,11 +11,9 @@ import Login from '../Login/Login';
 import Page404 from '../Page404/Page404';
 import Menu from '../Menu/Menu';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
-import MoviesApi from '../../utils/MoviesApi';
 import ErrorPopup from '../ErrorPopup/ErrorPopup';
 import * as mainApi from '../../utils/MainApi';
-import { transformMovies, getInitialFilms } from '../../utils/MovieHandler';
-import Preloader from '../Preloader/Preloader';
+import { getInitialFilms } from '../../utils/MovieHandler';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
