@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {currentUserContext} from '../../utils/Contexts';
 import './Profile.css';
 import Header from '../Header/Header';
