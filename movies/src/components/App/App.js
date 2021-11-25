@@ -31,6 +31,7 @@ function App() {
   const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [wereMoviesSearched, setWereMoviesSearched] = useState(false);
+  const [isResponseTrouble, setIsResponseTrouble] = useState(false);
 
   const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
   const menuObj = {isMenuActive, setIsMenuActive};
@@ -40,26 +41,26 @@ function App() {
     const handleWindowResize = (e) => {
       setWindowWidth(window.innerWidth);
     };
+
+    const handleStoredMovies = (e) => {
+      e.preventDefault();
+      loggedIn && localStorage.setItem('storedMovies', JSON.stringify(filteredFilms));
+    }
     
     window.addEventListener('resize', handleWindowResize);
-    window.addEventListener('beforeunload', (e) => {
-      e.preventDefault();
-      localStorage.setItem('storedMovies', JSON.stringify(filteredFilms));
-    })
+    window.addEventListener('beforeunload', handleStoredMovies)
 
     return () => {
+      
       window.removeEventListener('resize', handleWindowResize)
-      window.removeEventListener('beforeunload', (e) => {
-        e.preventDefault();
-        localStorage.setItem('storedMovies', JSON.stringify(filteredFilms));
-      })
+      window.removeEventListener('beforeunload', handleStoredMovies)
     }
-  }, [filteredFilms]);
+  }, [filteredFilms, loggedIn]);
 
   useEffect(() => {
     const films = localStorage.getItem('storedMovies');
     if(films) {
-      films && setFilteredFilms(JSON.parse(films));
+      setFilteredFilms(JSON.parse(films));
       setWereMoviesSearched(true);
     }
   }, []);
@@ -105,7 +106,7 @@ function App() {
   }
 
   function getInitialMovies() {
-    !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched);
+    !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched, setIsResponseTrouble);
   };
 
   function handleAuthorize(password, email) {
@@ -160,6 +161,7 @@ function App() {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
     localStorage.removeItem('initialMovies');
+    localStorage.removeItem('storedMovies');
     setCurrentUser({})
     setFilteredFilms([])
     setSavedMovies([])
@@ -172,6 +174,7 @@ function App() {
     const evtTarget = evt.target;
     if (evtTarget.classList.contains('popup') || evtTarget.classList.contains('popup__button-close')) {
       setIsErrorPopupOpen(false);
+      setErrorMessage('');
     }
   }
 
@@ -199,6 +202,7 @@ function App() {
                     isLoading={isLoading}
                     wereMoviesSearched={wereMoviesSearched}
                     setWereMoviesSearched={setWereMoviesSearched}
+                    isResponseTrouble={isResponseTrouble}
                 />
                 <ProtectedRoute
                     path="/saved-movies"

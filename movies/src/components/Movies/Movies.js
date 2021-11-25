@@ -9,7 +9,7 @@ import Footer from '../Footer/Footer';
 import { handleFilmsToShow, handleMoreClick, handleSearch } from '../../utils/MovieHandler';
 import NothingFound from '../NothingFound/NothingFound';
 
-function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies, filteredFilms, setFilteredFilms, getInitialMovies, isLoading, wereMoviesSearched }) {
+function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies, filteredFilms, setFilteredFilms, getInitialMovies, isLoading, wereMoviesSearched, isResponseTrouble }) {
     
     const [filmsToShow, setFilmsToShow] = useState([]);
     const [moreOn, setMoreOn] = useState(false);
@@ -28,7 +28,7 @@ function Movies({ movies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovi
             <Header/>
             <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={movies} handleSearch={handleSearch} getInitialMovies={getInitialMovies} />
 
-            {wereMoviesSearched && (filteredFilms.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} /> : <NothingFound />)} 
+            {wereMoviesSearched && (filteredFilms.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} /> : <NothingFound isResponseTrouble={isResponseTrouble} />)} 
 
             { moreOn && <More handleMoreButtonClick={handleMoreButtonClick}/> }
             <Footer/>

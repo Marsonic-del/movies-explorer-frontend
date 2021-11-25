@@ -63,11 +63,10 @@ export const handleMoreClick = (filmsToShow, filteredFilms, setFilmsToShow, setM
     }
 };
 
-export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched) => {
+export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched, setIsResponseTrouble) => {
     setWereMoviesSearched(true);
     const initialMovies = localStorage.getItem('initialMovies');
     if(initialMovies) {
-        console.log('initial movies are in local storage')
       setMovies(JSON.parse(initialMovies))
       setIsInitialMoviesSucces(true)
       const films = localStorage.getItem('storedMovies')
@@ -75,7 +74,7 @@ export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesS
     }
     else {
         setIsLoading(true)
-        console.log('searching initial movies..')
+        setIsResponseTrouble(false)
         const moviesApi = new MoviesApi({address: moviesApiAddress})
         moviesApi.getInitialMovies()
           .then((movies) => {
@@ -84,7 +83,9 @@ export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesS
             setIsInitialMoviesSucces(true)
             localStorage.setItem('initialMovies', JSON.stringify(transformedMovies));
           })
-          .catch((err) => console.log(err))
+          .catch((err) => {
+            setIsResponseTrouble(true)
+          })
           .finally(() => {
             setIsLoading(false)
           })

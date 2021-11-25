@@ -6,10 +6,10 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, han
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 
-   async function handleSubmit(e) {
+    function handleSubmit(e) {
     e.preventDefault();
     if(isValid) {
-      await getInitialMovies && getInitialMovies();
+      getInitialMovies && getInitialMovies();
       handleSearch(movies, setFilteredFilms, values.movie);
     }
   };
