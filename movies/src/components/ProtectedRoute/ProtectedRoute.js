@@ -21,20 +21,12 @@ function ProtectedRoute({ component: Component, ...props }) {
       throw new Error(400);
      }*/
      
-
-   
-  
-      
   return (
     <Route>
       { 
-      
         () => 
-                 
-        
         loggedIn ? <Component {...props} /> : <Redirect to="/" />
-        
-            
+         
       }
     </Route>
   );
