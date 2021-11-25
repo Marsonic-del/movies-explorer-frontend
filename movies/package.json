@@ -16,7 +16,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "npm run build && scp -r ./build/* vova@178.154.216.95:/home/vova/movies-explorer-frontend" 
   },
   "eslintConfig": {
     "extends": [

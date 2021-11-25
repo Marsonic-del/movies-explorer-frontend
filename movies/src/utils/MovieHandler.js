@@ -80,13 +80,13 @@ export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesS
           .then((movies) => {
             const transformedMovies = transformMovies(movies);
             setMovies(transformedMovies)
-            setIsInitialMoviesSucces(true)
             localStorage.setItem('initialMovies', JSON.stringify(transformedMovies));
           })
           .catch((err) => {
             setIsResponseTrouble(true)
           })
           .finally(() => {
+            setIsInitialMoviesSucces(true)
             setIsLoading(false)
           })
         }

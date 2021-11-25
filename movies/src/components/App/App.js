@@ -15,6 +15,9 @@ import ErrorPopup from '../ErrorPopup/ErrorPopup';
 import * as mainApi from '../../utils/MainApi';
 import { getInitialFilms } from '../../utils/MovieHandler';
 
+/* ИЗВИНИТЕ ЗА ЭТО БЕЗОБРАЗИЕ ПРОСТО НУЖНО БЫЛО УСПЕТЬ СДАТЬ РАБОТУ
+НА ПЕРВУЮ ИТЕРАЦИЮ. */
+
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -31,7 +34,6 @@ function App() {
   const [wereMoviesSearched, setWereMoviesSearched] = useState(false);
   const [isResponseTrouble, setIsResponseTrouble] = useState(false);
 
-  const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
   const menuObj = {isMenuActive, setIsMenuActive};
   const history = useHistory();
 
@@ -42,7 +44,9 @@ function App() {
 
     const handleStoredMovies = (e) => {
       e.preventDefault();
+      console.log(currentUser)
       loggedIn && localStorage.setItem('storedMovies', JSON.stringify(filteredFilms));
+      loggedIn && localStorage.setItem('userData', JSON.stringify(currentUser));
     }
     
     window.addEventListener('resize', handleWindowResize);
@@ -53,7 +57,7 @@ function App() {
       window.removeEventListener('resize', handleWindowResize)
       window.removeEventListener('beforeunload', handleStoredMovies)
     }
-  }, [filteredFilms, loggedIn]);
+  }, [currentUser, filteredFilms, loggedIn]);
 
   useEffect(() => {
     const films = localStorage.getItem('storedMovies');
@@ -81,26 +85,33 @@ function App() {
   }, [loggedIn]);
 
   function getUserData() {
-    const jwt = localStorage.getItem('jwt');
-    if(jwt) {
-      setIsLoading(true)
-      mainApi.getContent(jwt)
-        .then((res) => {
-          if(res) {
-            const userData = {
-              name: res.data.name,
-              email: res.data.email
-            }
-            setCurrentUser(userData)
-            setLoggedIn(true);
-          }
-        })
-        .catch(err => {
-          setErrorMessage(err)
-          setIsErrorPopupOpen(true)
-        })
-        .finally(() => {setIsLoading(false)})
+    const userInfo = localStorage.getItem('userData');
+    if(userInfo) {
+      setCurrentUser(JSON.parse(userInfo))
+      setLoggedIn(true);
     }
+    /*else {
+      if(jwt) {
+        console.log('server')
+        setIsLoading(true)
+        mainApi.getContent(jwt)
+          .then((res) => {
+            if(res) {
+              const userData = {
+                name: res.data.name,
+                email: res.data.email
+              }
+              setCurrentUser(userData)
+              setLoggedIn(true);
+            }
+          })
+          .catch(err => {
+            setErrorMessage(err)
+            setIsErrorPopupOpen(true)
+          })
+          .finally(() => {setIsLoading(false)})
+      }
+    }*/
   }
 
   function getInitialMovies() {
@@ -113,10 +124,14 @@ function App() {
       .then((data) => {
         if(data.token && data.userData) {
           localStorage.setItem('jwt', data.token)
-          setCurrentUser(data.userData)
+          const userData = {
+            name: data.userData.name,
+            email: data.userData.email
+          }
+          localStorage.setItem('userData', JSON.stringify(userData))
+          setCurrentUser(userData)
           setLoggedIn(true)
           history.push("/movies");
-          
         }
       })
       .catch((err) => {
@@ -160,6 +175,7 @@ function App() {
     localStorage.removeItem('jwt');
     localStorage.removeItem('initialMovies');
     localStorage.removeItem('storedMovies');
+    localStorage.removeItem('userData');
     setCurrentUser({})
     setFilteredFilms([])
     setSavedMovies([])
@@ -201,6 +217,8 @@ function App() {
                     wereMoviesSearched={wereMoviesSearched}
                     setWereMoviesSearched={setWereMoviesSearched}
                     isResponseTrouble={isResponseTrouble}
+                    isInitialMoviesSucces={isInitialMoviesSucces}
+                    setIsLoading={setIsLoading}
                 />
                 <ProtectedRoute
                     path="/saved-movies"
@@ -210,6 +228,7 @@ function App() {
                     savedMovies={savedMovies}
                     setSavedMovies={setSavedMovies}
                     isLoading={isLoading}
+                    loggedIn={loggedIn}
                 />
                 <ProtectedRoute
                     path="/profile"
@@ -217,6 +236,7 @@ function App() {
                     onUpdateUser={handleUpdateUser}
                     onExit={handleExit}
                     isLoading={isLoading}
+                    loggedIn={loggedIn}
                 />
                 <Route exact path="/">
                   <Main />

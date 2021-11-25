@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './SearchForm.css';
 import { useFormWithValidation } from '../../utils/FormValidator';
 
-function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, handleSearch, getInitialMovies }) {
+function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, handleSearch, getInitialMovies, isInitialMoviesSucces, setIsLoading }) {
+
+  //const [isLookingFor, setIsLookingFor] = useState(false);
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 
-    function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     if(isValid) {
       getInitialMovies && getInitialMovies();
@@ -19,7 +21,7 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, han
            <form className="search__form" onSubmit={handleSubmit} noValidate>
               <div className="search__line">
                 <div className="search-wrapper">
-                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" required />
+                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" />
                   <button type="submit" className="search__button" aria-label="Найти" disabled={!isValid}>Найти</button>
                 </div>
                 <span className="form__error">{errors.movie}</span>

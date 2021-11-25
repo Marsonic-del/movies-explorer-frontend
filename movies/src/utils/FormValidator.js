@@ -19,6 +19,8 @@ export function useFormWithValidation() {
   const [values, setValues] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
+  const regex = /[^a-zA-Z\s\-\u0400-\u04FF]+/
+  const message = 'Поле может содержать только кириллицу, латиницу, пробел, дефис'
 
   const handleChange = (event) => {
     const target = event.target;
@@ -27,6 +29,9 @@ export function useFormWithValidation() {
     setValues({...values, [name]: value});
     setErrors({...errors, [name]: target.validationMessage });
     setIsValid(target.closest("form").checkValidity());
+    if(name === 'name') {
+      regex.test(values[name]) && setErrors({...errors, [name]: message });
+    }
   };
 
   const resetForm = useCallback(
