@@ -7,8 +7,6 @@ import { useFormWithValidation } from '../../utils/FormValidator';
 
 function Profile({ onUpdateUser, onExit, isLoading }) {
   const currentUser = React.useContext(currentUserContext);
-  //const[email, setEmail] = useState('');
-  //const[name, setName] = useState('');
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 
