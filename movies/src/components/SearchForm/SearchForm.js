@@ -9,7 +9,7 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
   const { values, handleChange, errors, isValid } = FormWithValidation;
 
   function handleSubmit(e) {
-    onSubmit(e, setFilteredFilms, values.movie, setIsResponseTrouble, setIsLoading, setWereMoviesSearched);
+    onSubmit(e, setFilteredFilms, values.movie, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, movies);
   };
 
     return(
@@ -17,7 +17,7 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
            <form className="search__form" onSubmit={handleSubmit} noValidate>
               <div className="search__line">
                 <div className="search-wrapper">
-                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" reqired minLength="1" />
+                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" required minLength="1" />
                   <button type="submit" className="search__button" aria-label="Найти" disabled={!isValid}>Найти</button>
                 </div>
                 <span className="form__error">{errors.movie}</span>

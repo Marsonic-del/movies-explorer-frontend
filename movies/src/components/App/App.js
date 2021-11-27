@@ -11,8 +11,9 @@ import Login from '../Login/Login';
 import Page404 from '../Page404/Page404';
 import Menu from '../Menu/Menu';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
-import ErrorPopup from '../ErrorPopup/ErrorPopup';
+import InfoPopup from '../InfoPopup/InfoPopup';
 import * as mainApi from '../../utils/MainApi';
+import { DEFUALT_ERROR_MESSAGE } from '../../utils/Constants';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -25,10 +26,11 @@ function App() {
   const [filteredFilms, setFilteredFilms] = useState([]);
   const [isInitialMoviesSucces, setIsInitialMoviesSucces] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isErrorPopupOpen, setIsErrorPopupOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState('');
   const [wereMoviesSearched, setWereMoviesSearched] = useState(false);
   const [isResponseTrouble, setIsResponseTrouble] = useState(false);
+  const [isSavedMoviesResponseTrouble, setIsSavedMoviesResponseTrouble] = useState(false);
 
   const menuObj = {isMenuActive, setIsMenuActive};
   const history = useHistory();
@@ -42,6 +44,7 @@ function App() {
     const handleStoredMovies = (e) => {
       e.preventDefault();
       loggedIn && localStorage.setItem('storedMovies', JSON.stringify(movies));
+      loggedIn && localStorage.setItem('storedSavedMovies', JSON.stringify(savedMovies));
       loggedIn && localStorage.setItem('userData', JSON.stringify(currentUser));
       loggedIn && localStorage.setItem('wereMoviesSearched', wereMoviesSearched);
     }
@@ -54,7 +57,7 @@ function App() {
       window.removeEventListener('resize', handleWindowResize)
       window.removeEventListener('beforeunload', handleStoredMovies)
     }
-  }, [currentUser, movies, loggedIn, wereMoviesSearched]);
+  }, [currentUser, movies, loggedIn, wereMoviesSearched, savedMovies]);
 
   useEffect(() => {
     const films = localStorage.getItem('storedMovies');
@@ -72,15 +75,22 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt')
-    if(token) {
-      setIsLoading(true)
-      mainApi.getSavedMovies(token)
-      .then((movies) => {
-        setSavedMovies(movies.data)
+    const savedFilms = localStorage.getItem('storedSavedMovies');
+    if(savedFilms) {
+      setSavedMovies(JSON.parse(savedFilms));
+    }
+    else {
+      const token = localStorage.getItem('jwt')
+      if(token) {
+        setIsSavedMoviesResponseTrouble(false);
+        mainApi.getSavedMovies(token)
+          .then((movies) => {
+            setSavedMovies(movies.data)
+          })
+          .catch((err) => {
+            setIsSavedMoviesResponseTrouble(true);
       })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false))
+    }
     }
   }, [loggedIn]);
 
@@ -106,8 +116,8 @@ function App() {
             }
           })
           .catch(err => {
-            setErrorMessage(err)
-            setIsErrorPopupOpen(true)
+            setInfoMessage(err)
+            setIsInfoPopupOpen(true)
           })
           .finally(() => {setIsLoading(false)})
       }
@@ -135,8 +145,8 @@ function App() {
         }
       })
       .catch((err) => {
-        setErrorMessage(err)
-        setIsErrorPopupOpen(true)
+        setInfoMessage(err)
+        setIsInfoPopupOpen(true)
       })
       .finally(() => {setIsLoading(false)})
   }
@@ -150,8 +160,9 @@ function App() {
       }
     })
     .catch(err => {
-      setErrorMessage(err)
-      setIsErrorPopupOpen(true)
+      setIsResponseTrouble(true);
+      setInfoMessage(err)
+      setIsInfoPopupOpen(true)
     })
     .finally(() => {setIsLoading(false)})
   }
@@ -161,11 +172,15 @@ function App() {
     const token = localStorage.getItem('jwt')
     mainApi.editProfile(data, token)
       .then(data => {
-        setCurrentUser({ name: data.userData.name, email: data.userData.email })
+        setCurrentUser({ name: data.userData.name, email: data.userData.email });
+        setInfoMessage("Ваши данные успешно обновленны");
+        setIsInfoPopupOpen(true);
       })
-      .catch((err) => {
-        setErrorMessage(err)
-        setIsErrorPopupOpen(true)
+      .catch((err) => {console.log(err.response)
+        const message = "Ошибка 400. Заполните поля Имя и Email";
+        setInfoMessage(err.response.status === 400 ? message : DEFUALT_ERROR_MESSAGE);
+        setIsResponseTrouble(true);
+        setIsInfoPopupOpen(true);
       })
       .finally(() => {setIsLoading(false)})
   }
@@ -175,6 +190,7 @@ function App() {
     localStorage.removeItem('jwt');
     localStorage.removeItem('initialMovies');
     localStorage.removeItem('storedMovies');
+    localStorage.removeItem('storedSavedMovies');
     localStorage.removeItem('userData');
     localStorage.removeItem('wereMoviesSearched');
     setCurrentUser({})
@@ -188,8 +204,9 @@ function App() {
   function handleClickClose(evt) {
     const evtTarget = evt.target;
     if (evtTarget.classList.contains('popup') || evtTarget.classList.contains('popup__button-close')) {
-      setIsErrorPopupOpen(false);
-      setErrorMessage('');
+      setIsInfoPopupOpen(false);
+      setIsResponseTrouble(false);
+      setInfoMessage('');
     }
   }
 
@@ -232,6 +249,7 @@ function App() {
                     setSavedMovies={setSavedMovies}
                     isLoading={isLoading}
                     loggedIn={loggedIn}
+                    isSavedMoviesResponseTrouble={isSavedMoviesResponseTrouble}
                 />
                 <ProtectedRoute
                     path="/profile"
@@ -254,7 +272,7 @@ function App() {
                   <Page404/>
                 </Route>
               </Switch>
-              <ErrorPopup isOpen={isErrorPopupOpen} handleClickClose={handleClickClose} message={errorMessage} />
+              <InfoPopup isOpen={isInfoPopupOpen} handleClickClose={handleClickClose} message={infoMessage} isError={isResponseTrouble} />
             </div>
           </currentUserContext.Provider>
         </SetMenuActiveContext.Provider>

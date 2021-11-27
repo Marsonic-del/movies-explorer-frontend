@@ -14,6 +14,7 @@ function Movies({ movies, setMovies, isShortFilm, setIsShortFilm, savedMovies, s
     
     const [filmsToShow, setFilmsToShow] = useState([]);
     const [moreOn, setMoreOn] = useState(false);
+    const MOVIES_SERVER_ERROR_MESSAGE = 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз'
 
     function findMovies(e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched) {
         handleSearchMovies(e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched);
@@ -24,7 +25,6 @@ function Movies({ movies, setMovies, isShortFilm, setIsShortFilm, savedMovies, s
     }
     
     React.useEffect(() => {
-        console.log('movies....')
         handleFilmsToShow(movies, setFilmsToShow, setMoreOn, isShortFilm);
     }, [movies, isShortFilm, setFilmsToShow])
 
@@ -36,7 +36,7 @@ function Movies({ movies, setMovies, isShortFilm, setIsShortFilm, savedMovies, s
 
             {/*<MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} />*/}
 
-            {wereMoviesSearched && (movies.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} /> : <NothingFound isResponseTrouble={isResponseTrouble} />)} 
+            {wereMoviesSearched ? (movies.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} /> : <NothingFound />) : (isResponseTrouble && MOVIES_SERVER_ERROR_MESSAGE)} 
 
             { moreOn && <More handleMoreButtonClick={handleMoreButtonClick}/> }
             <Footer/>

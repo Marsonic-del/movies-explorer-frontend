@@ -4,7 +4,10 @@ function checkResponse(res) {
     if (res.ok) {
       return res.json();
     }
-    return Promise.reject(`Ошибка: ${ res.status }`);
+    //return Promise.reject(`Ошибка: ${ res.status }`);
+    let error = new Error(res.status);
+                error.response = res;
+                throw error
   }
   
   // Запрос на аутентификацию
@@ -16,7 +19,6 @@ export const authorize = (password, email) => {
       },
       body: JSON.stringify({password, email })
     })
-    
     .then((res) => checkResponse(res))
   };
 

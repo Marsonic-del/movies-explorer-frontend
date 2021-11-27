@@ -25,20 +25,11 @@ const movieCounter = () => {
     }
 }
 
-const saveMovies = (token, setSavedMovies) => {
-    getSavedMovies(token)
-      .then((movies) => {
-        setSavedMovies(movies.data)
-      })
-      .catch((err) => console.log(err));
-  }
-
 export const handleFilmsToShow = (filteredFilms, setFilmsToShow, setMoreOn, isShortFilm) => {
     const { filmCounter } = movieCounter();
     const shortFilmDuration = 40;
     const shortFilms = filteredFilms.filter(film => film.duration <= shortFilmDuration);
-    const filmsToShow = isShortFilm ? shortFilms : filteredFilms
-    console.log(filmsToShow)
+    const filmsToShow = isShortFilm ? shortFilms : filteredFilms;
 
     if(filmsToShow.length <= filmCounter) {
         setFilmsToShow(filmsToShow)
@@ -119,6 +110,7 @@ export const handleSearchMovies = (e, setFilteredFilms, value, setIsResponseTrou
           })
           .catch((err) => {
             setIsResponseTrouble(true);
+            setWereMoviesSearched(false);
           })
           .finally(() => setIsLoading(false))
     }
@@ -151,8 +143,6 @@ export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, 
             setFilmsToShow(shortFilms);
         }
         else {
-            console.log('setFilmsToShow(filteredFilms)')
-            console.log(filteredFilms)
             setFilmsToShow(filteredFilms);
         }
     }
@@ -162,8 +152,6 @@ export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, 
             setFilmsToShow(shortFilms);
         }
         else {
-            console.log('setFilmsToShow(savedMovies)')
-            console.log(savedMovies)
             setFilmsToShow(savedMovies);
         }
     }
@@ -184,13 +172,21 @@ export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, sav
       saveMovie(film, token)
         .then((res) => {
           if(res) {
-            saveMovies(token, setSavedMovies, setIsSaved)
+            saveMovies(token, setSavedMovies)
             setIsSaved(true)
             }
         })
         .catch(err => console.log(err))
     }
 };
+
+const saveMovies = (token, setSavedMovies) => {
+  getSavedMovies(token)
+    .then((movies) => {
+      setSavedMovies(movies.data)
+    })
+    .catch((err) => console.log(err));
+}
 
   export const deleteMovie = (film, setSavedMovies) => {
     const token = localStorage.getItem('jwt');

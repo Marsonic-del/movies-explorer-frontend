@@ -48,6 +48,11 @@
     cursor: pointer;
     transition: opacity .25s linear;
 }
+.search__button:disabled {
+    cursor: auto;
+    opacity: .5;
+}
+
 .search__button:hover {
     opacity: .8;
 }
