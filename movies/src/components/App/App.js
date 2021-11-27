@@ -100,35 +100,10 @@ function App() {
       setCurrentUser(JSON.parse(userInfo))
       setLoggedIn(true);
     }
-    /*else {
-      if(jwt) {
-        console.log('server')
-        setIsLoading(true)
-        mainApi.getContent(jwt)
-          .then((res) => {
-            if(res) {
-              const userData = {
-                name: res.data.name,
-                email: res.data.email
-              }
-              setCurrentUser(userData)
-              setLoggedIn(true);
-            }
-          })
-          .catch(err => {
-            setInfoMessage(err)
-            setIsInfoPopupOpen(true)
-          })
-          .finally(() => {setIsLoading(false)})
-      }
-    }*/
-  }
-
-  /*function getInitialMovies() {
-    !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched, setIsResponseTrouble);
-  };*/
+  };
 
   function handleAuthorize(password, email) {
+    removeDataBeforeAuth();
     setIsLoading(true)
     mainApi.authorize(password, email)
       .then((data) => {
@@ -145,14 +120,18 @@ function App() {
         }
       })
       .catch((err) => {
-        setInfoMessage(err)
+        err.response.json().then(err => {
+          setIsResponseTrouble(true);
+        setInfoMessage(err.message)
         setIsInfoPopupOpen(true)
+        } )
       })
       .finally(() => {setIsLoading(false)})
   }
 
   const handleRegister = (name, password,email) => {
-    setIsLoading(true)
+    setIsLoading(true);
+    setIsResponseTrouble(false);
     mainApi.register(name, password,email)
     .then(res => {
       if(res) {
@@ -161,14 +140,13 @@ function App() {
     })
     .catch(err => {
       setIsResponseTrouble(true);
-      setInfoMessage(err)
-      setIsInfoPopupOpen(true)
     })
     .finally(() => {setIsLoading(false)})
   }
 
   const handleUpdateUser = (data) => {
-    setIsLoading(true)
+    setIsLoading(true);
+    setIsResponseTrouble(false);
     const token = localStorage.getItem('jwt')
     mainApi.editProfile(data, token)
       .then(data => {
@@ -176,7 +154,7 @@ function App() {
         setInfoMessage("Ваши данные успешно обновленны");
         setIsInfoPopupOpen(true);
       })
-      .catch((err) => {console.log(err.response)
+      .catch((err) => {
         const message = "Ошибка 400. Заполните поля Имя и Email";
         setInfoMessage(err.response.status === 400 ? message : DEFUALT_ERROR_MESSAGE);
         setIsResponseTrouble(true);
@@ -184,8 +162,9 @@ function App() {
       })
       .finally(() => {setIsLoading(false)})
   }
-
-  const handleExit = () => {
+ 
+  // На случай если авторизация происходит когда пользователь не вышел с аккаунта
+  const removeDataBeforeAuth = () => {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
     localStorage.removeItem('initialMovies');
@@ -198,6 +177,10 @@ function App() {
     setSavedMovies([])
     setIsInitialMoviesSucces(false)
     setWereMoviesSearched(false)
+  }
+
+  const handleExit = () => {
+    removeDataBeforeAuth();
     history.push('/');
   }
 
@@ -266,7 +249,7 @@ function App() {
                   <Login onAuthorize={handleAuthorize} isLoading={isLoading} />
                 </Route>
                 <Route path="/signup">
-                  <Register onRegister={handleRegister} isLoading={isLoading} />
+                  <Register onRegister={handleRegister} isLoading={isLoading} isResponseTrouble={isResponseTrouble} />
                 </Route>
                 <Route path="*">
                   <Page404/>

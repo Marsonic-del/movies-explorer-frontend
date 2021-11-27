@@ -87,6 +87,14 @@
     opacity: 0.8;
 }
 
+.form__button-register {
+    margin-top: 20px;
+}
+
+.form__error-button-register {
+    margin-top: 40px;
+}
+
 .form__link_type_login {
     font-weight: normal;
     font-size: 14px;
