@@ -7,6 +7,7 @@ import NothingFound from '../NothingFound/NothingFound';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Footer from '../Footer/Footer';
 import { handleSearch, handleSavedFilmsToShow } from '../../utils/MovieHandler';
+import { MOVIES_SERVER_ERROR_MESSAGE } from '../../utils/Constants';
 
 function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm, isLoading, isSavedMoviesResponseTrouble }) {
     const [filteredFilms, setFilteredFilms] = useState(null);
@@ -27,7 +28,7 @@ function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm,
             <Header/>
             <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={savedMovies} onSubmit={handleSearchSavedMovies} />
 
-            {filmsToShow.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} /> : <NothingFound />}
+            {!isSavedMoviesResponseTrouble ? (filmsToShow.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} /> : <NothingFound />) : MOVIES_SERVER_ERROR_MESSAGE}
             <div className="savedivider"></div>
 
             <Footer/>

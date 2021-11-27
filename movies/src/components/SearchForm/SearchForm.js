@@ -4,7 +4,6 @@ import { useFormWithValidation } from '../../utils/FormValidator';
 
 function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, setIsLoading, onSubmit, setIsResponseTrouble, setWereMoviesSearched }) {
 
-  //const [isLookingFor, setIsLookingFor] = useState(false);
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 

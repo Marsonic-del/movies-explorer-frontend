@@ -56,37 +56,7 @@ export const handleMoreClick = (filmsToShow, filteredFilms, setFilmsToShow, setM
     }
 };
 
-/*export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched, setIsResponseTrouble) => {
-    setWereMoviesSearched(true);
-    const initialMovies = localStorage.getItem('initialMovies');
-    if(initialMovies) {
-      setMovies(JSON.parse(initialMovies))
-      setIsInitialMoviesSucces(true)
-      const films = localStorage.getItem('storedMovies')
-      films && setFilteredFilms(JSON.parse(films))
-    }
-    else {
-        setIsLoading(true)
-        setIsResponseTrouble(false)
-        const moviesApi = new MoviesApi({address: moviesApiAddress})
-        moviesApi.getInitialMovies()
-          .then((movies) => {
-            const transformedMovies = transformMovies(movies);
-            setMovies(transformedMovies)
-            localStorage.setItem('initialMovies', JSON.stringify(transformedMovies));
-          })
-          .catch((err) => {
-            setIsResponseTrouble(true)
-          })
-          .finally(() => {
-            setIsInitialMoviesSucces(true)
-            setIsLoading(false)
-          })
-        }
-};*/
-
 export const handleSearch = (movies, setFilteredFilms, value) => {
-    console.log(movies)
     const searchedFilms = movies.filter(movie => {return (movie.nameRU.toLowerCase().includes(value.toLowerCase()))});
     setFilteredFilms(searchedFilms);
 };

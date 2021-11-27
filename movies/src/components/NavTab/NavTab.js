@@ -12,12 +12,9 @@ function NavTab() {
   const windowWidth = React.useContext(WindowWidthContext);
   const loggedIn = React.useContext(loggedInContext);
   const menuObj = React.useContext(SetMenuActiveContext);
-  const {isMenuActive, setIsMenuActive} = menuObj;
+  const { setIsMenuActive} = menuObj;
   const handleMenu = () => {
-
-    console.log(isMenuActive)
     setIsMenuActive(true)
-    console.log(isMenuActive)
   }
     return (
       <section className="navTab">

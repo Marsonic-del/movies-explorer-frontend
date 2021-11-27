@@ -36,7 +36,6 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
-    console.log(wereMoviesSearched)
     const handleWindowResize = (e) => {
       setWindowWidth(window.innerWidth);
     };
@@ -210,17 +209,12 @@ function App() {
                     setIsShortFilm={setIsShortFilm}
                     savedMovies={savedMovies}
                     setSavedMovies={setSavedMovies}
-                    filteredFilms={filteredFilms}
-                    setFilteredFilms={setFilteredFilms}
-                    //getInitialMovies={getInitialMovies}
-                    getUserData={getUserData}
                     loggedIn={loggedIn}
                     isLoading={isLoading}
                     wereMoviesSearched={wereMoviesSearched}
                     setWereMoviesSearched={setWereMoviesSearched}
                     isResponseTrouble={isResponseTrouble}
                     setIsResponseTrouble={setIsResponseTrouble}
-                    isInitialMoviesSucces={isInitialMoviesSucces}
                     setIsLoading={setIsLoading}
                 />
                 <ProtectedRoute

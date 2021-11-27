@@ -50,7 +50,6 @@ export const editProfile = (data, token) => {
   }
 
   export const saveMovie = (movie, token) => {
-    console.log(JSON.stringify(movie))
     return fetch(`${ BASE_URL }/movies`, {
       method: 'POST',
       headers: {
