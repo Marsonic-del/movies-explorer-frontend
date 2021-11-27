@@ -13,10 +13,6 @@ import Menu from '../Menu/Menu';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import ErrorPopup from '../ErrorPopup/ErrorPopup';
 import * as mainApi from '../../utils/MainApi';
-import { getInitialFilms } from '../../utils/MovieHandler';
-
-/* ИЗВИНИТЕ ЗА ЭТО БЕЗОБРАЗИЕ ПРОСТО НУЖНО БЫЛО УСПЕТЬ СДАТЬ РАБОТУ
-НА ПЕРВУЮ ИТЕРАЦИЮ. */
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -38,15 +34,16 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
+    console.log(wereMoviesSearched)
     const handleWindowResize = (e) => {
       setWindowWidth(window.innerWidth);
     };
 
     const handleStoredMovies = (e) => {
       e.preventDefault();
-      console.log(currentUser)
-      loggedIn && localStorage.setItem('storedMovies', JSON.stringify(filteredFilms));
+      loggedIn && localStorage.setItem('storedMovies', JSON.stringify(movies));
       loggedIn && localStorage.setItem('userData', JSON.stringify(currentUser));
+      loggedIn && localStorage.setItem('wereMoviesSearched', wereMoviesSearched);
     }
     
     window.addEventListener('resize', handleWindowResize);
@@ -57,13 +54,16 @@ function App() {
       window.removeEventListener('resize', handleWindowResize)
       window.removeEventListener('beforeunload', handleStoredMovies)
     }
-  }, [currentUser, filteredFilms, loggedIn]);
+  }, [currentUser, movies, loggedIn, wereMoviesSearched]);
 
   useEffect(() => {
     const films = localStorage.getItem('storedMovies');
+    const wereFilmsSearched = localStorage.getItem('wereMoviesSearched')
     if(films) {
-      setFilteredFilms(JSON.parse(films));
-      setWereMoviesSearched(true);
+      setMovies(JSON.parse(films));
+    }
+    if(wereFilmsSearched) {
+      JSON.parse(wereFilmsSearched) && setWereMoviesSearched(true);
     }
   }, []);
 
@@ -114,9 +114,9 @@ function App() {
     }*/
   }
 
-  function getInitialMovies() {
+  /*function getInitialMovies() {
     !isInitialMoviesSucces && getInitialFilms(setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched, setIsResponseTrouble);
-  };
+  };*/
 
   function handleAuthorize(password, email) {
     setIsLoading(true)
@@ -176,8 +176,9 @@ function App() {
     localStorage.removeItem('initialMovies');
     localStorage.removeItem('storedMovies');
     localStorage.removeItem('userData');
+    localStorage.removeItem('wereMoviesSearched');
     setCurrentUser({})
-    setFilteredFilms([])
+    setMovies([])
     setSavedMovies([])
     setIsInitialMoviesSucces(false)
     setWereMoviesSearched(false)
@@ -204,19 +205,21 @@ function App() {
                     path="/movies"
                     component={Movies}
                     movies={movies}
+                    setMovies={setMovies}
                     isShortFilm={isShortFilm}
                     setIsShortFilm={setIsShortFilm}
                     savedMovies={savedMovies}
                     setSavedMovies={setSavedMovies}
                     filteredFilms={filteredFilms}
                     setFilteredFilms={setFilteredFilms}
-                    getInitialMovies={getInitialMovies}
+                    //getInitialMovies={getInitialMovies}
                     getUserData={getUserData}
                     loggedIn={loggedIn}
                     isLoading={isLoading}
                     wereMoviesSearched={wereMoviesSearched}
                     setWereMoviesSearched={setWereMoviesSearched}
                     isResponseTrouble={isResponseTrouble}
+                    setIsResponseTrouble={setIsResponseTrouble}
                     isInitialMoviesSucces={isInitialMoviesSucces}
                     setIsLoading={setIsLoading}
                 />

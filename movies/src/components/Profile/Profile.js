@@ -26,7 +26,7 @@ function Profile({ onUpdateUser, onExit, isLoading }) {
           <form className="form" name="form" onSubmit={handleFormSubmit} noValidate>
             <div className="form__input-box">
               <div className="form-input-wrapper">
-                <label for="name-input" className="form__input-name">Имя</label>
+                <label htmlFor="name-input" className="form__input-name">Имя</label>
                 <input id="name-input" onChange={handleChange} type="text" placeholder="Имя" className="form__input" name="name" required minLength="2"  maxLength="40" defaultValue={currentUser.name}/>
               </div>
               <span className="form__error name-input-error">{errors.name}</span>
@@ -34,7 +34,7 @@ function Profile({ onUpdateUser, onExit, isLoading }) {
 
              <div className="form__input-box">
                <div className="form-input-wrapper">
-                 <label for="email-input" className="form__input-name">Email</label>
+                 <label htmlFor="email-input" className="form__input-name">Email</label>
                  <input id="email-input"  type="email" onChange={handleChange} placeholder="Email" className="form__input" name="email" required minLength="2" maxLength="30" defaultValue={currentUser.email}/>
                </div>
               <span className="form__error">{errors.email}</span>

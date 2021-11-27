@@ -1,4 +1,4 @@
-class moviesApi {
+class MoviesApi {
     constructor({ address }) {
       this._address = address;
       this._headers = {
@@ -19,4 +19,4 @@ class moviesApi {
     }
 }
   
-  export default moviesApi;
+  export default MoviesApi;

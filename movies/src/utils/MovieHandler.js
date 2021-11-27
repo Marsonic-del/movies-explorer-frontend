@@ -2,6 +2,7 @@ import MoviesApi from '../utils/MoviesApi';
 import { removeMovie, saveMovie, getSavedMovies } from './MainApi';
 
 const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
+const moviesApi = new MoviesApi({address: moviesApiAddress})
 
 const movieCounter = () => {
     if(window.innerWidth <= 480) {
@@ -37,6 +38,7 @@ export const handleFilmsToShow = (filteredFilms, setFilmsToShow, setMoreOn, isSh
     const shortFilmDuration = 40;
     const shortFilms = filteredFilms.filter(film => film.duration <= shortFilmDuration);
     const filmsToShow = isShortFilm ? shortFilms : filteredFilms
+    console.log(filmsToShow)
 
     if(filmsToShow.length <= filmCounter) {
         setFilmsToShow(filmsToShow)
@@ -63,7 +65,7 @@ export const handleMoreClick = (filmsToShow, filteredFilms, setFilmsToShow, setM
     }
 };
 
-export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched, setIsResponseTrouble) => {
+/*export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesSucces, setIsLoading, setWereMoviesSearched, setIsResponseTrouble) => {
     setWereMoviesSearched(true);
     const initialMovies = localStorage.getItem('initialMovies');
     if(initialMovies) {
@@ -90,12 +92,37 @@ export const getInitialFilms = (setMovies, setFilteredFilms, setIsInitialMoviesS
             setIsLoading(false)
           })
         }
-};
+};*/
 
 export const handleSearch = (movies, setFilteredFilms, value) => {
+    console.log(movies)
     const searchedFilms = movies.filter(movie => {return (movie.nameRU.toLowerCase().includes(value.toLowerCase()))});
     setFilteredFilms(searchedFilms);
 };
+
+export const handleSearchMovies = (e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setIsResponseTrouble(false);
+    setWereMoviesSearched(true);
+    const initialMovies = JSON.parse(localStorage.getItem('initialMovies'));
+    if(initialMovies) {
+        handleSearch(initialMovies, setFilteredFilms, value);
+        setIsLoading(false);
+    }
+    else {
+        moviesApi.getInitialMovies()
+          .then(initialMovies => {
+            const transformedMovies = transformMovies(initialMovies);
+              localStorage.setItem('initialMovies', JSON.stringify(transformedMovies));
+              handleSearch(transformedMovies, setFilteredFilms, value);
+          })
+          .catch((err) => {
+            setIsResponseTrouble(true);
+          })
+          .finally(() => setIsLoading(false))
+    }
+}
 
 export const transformMovies = (films) => {
     const movies = films.map(film => {

@@ -1,6 +1,7 @@
 .card {
     width: 360px;
     background-color: #222222;
+    cursor: pointer;
 }
 .card__image {
     height: 200px;
