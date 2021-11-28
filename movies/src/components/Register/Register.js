@@ -4,9 +4,8 @@ import './Register.css';
 import logo from '../../images/headerLogo.png'
 import Preloader from '../Preloader/Preloader';
 import { useFormWithValidation } from '../../utils/FormValidator';
-import { DEFUALT_ERROR_MESSAGE } from '../../utils/Constants';
 
-function Register({ onRegister, isLoading, isResponseTrouble }) {
+function Register({ onRegister, isLoading, isResponseTrouble, infoMessage }) {
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 
@@ -34,7 +33,7 @@ function Register({ onRegister, isLoading, isResponseTrouble }) {
           <input id="password-input"  type="password"  onChange={handleChange} placeholder="Пароль" className="form__input form__input_block_register" name="password" required minLength="8"/>
           <span className="form__error">{errors.password}</span>
            
-          {isResponseTrouble && <span className={`form__error ${isResponseTrouble && "form__error-button-register"}`}>{DEFUALT_ERROR_MESSAGE}</span>}
+          {isResponseTrouble && <span className={`form__error ${isResponseTrouble && "form__error-button-register"}`}>{infoMessage}</span>}
           <button className={`form__button ${isResponseTrouble && "form__button-register"}`} type="submit" disabled={!isValid}>Зарегистрироваться</button>
         </form>
         <Link className="form__link form__link_type_login" to="/signin" >Уже зарегистрированы? <span className="form__link-enter">Войти</span>

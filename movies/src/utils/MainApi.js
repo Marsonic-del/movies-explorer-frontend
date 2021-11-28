@@ -1,11 +1,10 @@
-export const BASE_URL = 'https://za-kulisami.nomoredomains.monster';
+import { BASE_URL } from './Constants'
 
 function checkResponse(res) {
     if (res.ok) {
       return res.json();
     }
-    //return Promise.reject(`Ошибка: ${ res.status }`);
-    let error = new Error(res.status);
+    const error = new Error(res.status);
                 error.response = res;
                 throw error
   }

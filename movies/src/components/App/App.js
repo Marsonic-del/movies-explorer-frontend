@@ -23,8 +23,6 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [isShortFilm, setIsShortFilm] = useState(false);
   const [savedMovies, setSavedMovies] = useState([]);
-  const [filteredFilms, setFilteredFilms] = useState([]);
-  const [isInitialMoviesSucces, setIsInitialMoviesSucces] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isInfoPopupOpen, setIsInfoPopupOpen] = useState(false);
   const [infoMessage, setInfoMessage] = useState('');
@@ -121,8 +119,8 @@ function App() {
       .catch((err) => {
         err.response.json().then(err => {
           setIsResponseTrouble(true);
-        setInfoMessage(err.message)
-        setIsInfoPopupOpen(true)
+          setInfoMessage(err.message)
+          setIsInfoPopupOpen(true)
         } )
       })
       .finally(() => {setIsLoading(false)})
@@ -138,7 +136,10 @@ function App() {
       }
     })
     .catch(err => {
-      setIsResponseTrouble(true);
+      err.response.json().then(err => {
+        setIsResponseTrouble(true);
+        setInfoMessage(err.message);
+      })
     })
     .finally(() => {setIsLoading(false)})
   }
@@ -174,7 +175,6 @@ function App() {
     setCurrentUser({})
     setMovies([])
     setSavedMovies([])
-    setIsInitialMoviesSucces(false)
     setWereMoviesSearched(false)
   }
 
@@ -225,6 +225,7 @@ function App() {
                     savedMovies={savedMovies}
                     setSavedMovies={setSavedMovies}
                     isLoading={isLoading}
+                    setIsLoading={setIsLoading}
                     loggedIn={loggedIn}
                     isSavedMoviesResponseTrouble={isSavedMoviesResponseTrouble}
                 />
@@ -243,7 +244,7 @@ function App() {
                   <Login onAuthorize={handleAuthorize} isLoading={isLoading} />
                 </Route>
                 <Route path="/signup">
-                  <Register onRegister={handleRegister} isLoading={isLoading} isResponseTrouble={isResponseTrouble} />
+                  <Register onRegister={handleRegister} isLoading={isLoading} isResponseTrouble={isResponseTrouble} infoMessage={infoMessage} />
                 </Route>
                 <Route path="*">
                   <Page404/>

@@ -2,7 +2,6 @@ import React from 'react';
 import './Portfolio.css';
 import arrow from '../../images/arrow.png';
 
-
 function Portfolio() {
     return(
       <section className="portfolio">

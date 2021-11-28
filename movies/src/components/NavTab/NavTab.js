@@ -7,7 +7,6 @@ import headerLogo from '../../images/headerLogo.png';
 import profiler from '../../images/headerProfile.png';
 import menuButton from '../../images/menu_button.svg';
 
-
 function NavTab() {
   const windowWidth = React.useContext(WindowWidthContext);
   const loggedIn = React.useContext(loggedInContext);

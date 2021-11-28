@@ -6,10 +6,10 @@ import SearchForm from '../SearchForm/SearchForm';
 import NothingFound from '../NothingFound/NothingFound';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Footer from '../Footer/Footer';
-import { handleSearch, handleSavedFilmsToShow } from '../../utils/MovieHandler';
+import { handleSearch, handleSavedFilmsToShow } from '../../utils/MovieHandlers';
 import { MOVIES_SERVER_ERROR_MESSAGE } from '../../utils/Constants';
 
-function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm, isLoading, isSavedMoviesResponseTrouble }) {
+function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm, isLoading, isSavedMoviesResponseTrouble, setIsLoading }) {
     const [filteredFilms, setFilteredFilms] = useState(null);
     const [filmsToShow, setFilmsToShow] = useState([]);
 
@@ -28,7 +28,7 @@ function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm,
             <Header/>
             <SearchForm setFilteredFilms={setFilteredFilms} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={savedMovies} onSubmit={handleSearchSavedMovies} />
 
-            {!isSavedMoviesResponseTrouble ? (filmsToShow.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} /> : <NothingFound />) : MOVIES_SERVER_ERROR_MESSAGE}
+            {!isSavedMoviesResponseTrouble ? (filmsToShow.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} setIsLoading={setIsLoading} /> : <NothingFound />) : MOVIES_SERVER_ERROR_MESSAGE}
             <div className="savedivider"></div>
 
             <Footer/>

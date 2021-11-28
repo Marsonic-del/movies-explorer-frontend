@@ -3,7 +3,6 @@ import './InfoPopup.css';
 import imageSucces from '../../images/Union.svg';
 import errorImage from '../../images/errorImage.svg'
 
-
 function InfoPopup({isOpen, handleClickClose, message, isError}) {
     return(
         <section className={`popup  ${isOpen && "popup_opened"} `} onClick={handleClickClose} >

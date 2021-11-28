@@ -1,8 +1,8 @@
-import MoviesApi from '../utils/MoviesApi';
+import MoviesApi from './MoviesApi';
 import { removeMovie, saveMovie, getSavedMovies } from './MainApi';
+import { MOVIES_API_ADDRESS } from './Constants'
 
-const moviesApiAddress = 'https://api.nomoreparties.co/beatfilm-movies';
-const moviesApi = new MoviesApi({address: moviesApiAddress})
+const moviesApi = new MoviesApi({address: MOVIES_API_ADDRESS})
 
 const movieCounter = () => {
     if(window.innerWidth <= 480) {
@@ -85,7 +85,8 @@ export const handleSearchMovies = (e, setFilteredFilms, value, setIsResponseTrou
           .finally(() => setIsLoading(false))
     }
 }
-
+// Данные с сервера с фильмами приходят немного отличными от тех что сохраняются
+// в базе. Корректируем. 
 export const transformMovies = (films) => {
     const movies = films.map(film => {
       const movie = { ...film, trailer: film.trailerLink, image: film.image.url, thumbnail: film.image.formats.thumbnail.url, movieId: film.id, };
@@ -127,40 +128,45 @@ export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, 
     }
 };
 
-export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, savedMovies) => {
+export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, savedMovies, setIsLoading) => {
     const token = localStorage.getItem('jwt');
     if(isSaved) {
       const movieToRemove = savedMovies.find(f => f.movieId === film.movieId)
+      setIsLoading(true);
       removeMovie(movieToRemove._id, token)
         .then(res => {
           saveMovies(token, setSavedMovies, setIsSaved)
-          setIsSaved(false)
         })
         .catch(err => console.log(err))
+        .finally(() => setIsLoading(false))
     }
     else {
-      saveMovie(film, token)
-        .then((res) => {
-          if(res) {
-            saveMovies(token, setSavedMovies)
-            setIsSaved(true)
-            }
-        })
-        .catch(err => console.log(err))
+        setIsLoading(true);
+        saveMovie(film, token)
+          .then((res) => {
+            if(res) {
+              saveMovies(token, setSavedMovies, setIsSaved)
+              }
+          })
+          .catch(err => console.log(err))
+          .finally(() => setIsLoading(false))
     }
 };
 
-const saveMovies = (token, setSavedMovies) => {
-  getSavedMovies(token)
-    .then((movies) => {
-      setSavedMovies(movies.data)
-    })
-    .catch((err) => console.log(err));
+const saveMovies = (token, setSavedMovies, setIsSaved) => {
+    getSavedMovies(token)
+      .then((movies) => {
+        setSavedMovies(movies.data)
+        setIsSaved(false);
+      })
+      .catch((err) => console.log(err))
 }
 
-  export const deleteMovie = (film, setSavedMovies) => {
+  export const deleteMovie = (film, setSavedMovies, setIsLoading) => {
     const token = localStorage.getItem('jwt');
+    setIsLoading(true);
     removeMovie(film._id, token)
       .then(() => saveMovies(token, setSavedMovies))
       .catch(err => console.log(err))
+      .finally(() => setIsLoading(false))
   }

@@ -6,9 +6,9 @@ import More from '../More/More';
 import Header from '../Header/Header';
 import Preloader from '../Preloader/Preloader';
 import Footer from '../Footer/Footer';
-import { handleFilmsToShow, handleMoreClick } from '../../utils/MovieHandler';
+import { handleFilmsToShow, handleMoreClick } from '../../utils/MovieHandlers';
 import NothingFound from '../NothingFound/NothingFound';
-import { handleSearchMovies } from '../../utils/MovieHandler';
+import { handleSearchMovies } from '../../utils/MovieHandlers';
 import { MOVIES_SERVER_ERROR_MESSAGE } from '../../utils/Constants';
 
 function Movies({ movies, setMovies, isShortFilm, setIsShortFilm, savedMovies, setSavedMovies, isLoading, wereMoviesSearched, setWereMoviesSearched, setIsLoading, isResponseTrouble, setIsResponseTrouble }) {
@@ -34,7 +34,7 @@ function Movies({ movies, setMovies, isShortFilm, setIsShortFilm, savedMovies, s
             <Header/>
             <SearchForm setFilteredFilms={setMovies} setIsShortFilm={setIsShortFilm} isShortFilm={isShortFilm} movies={movies} setIsLoading={setIsLoading} setIsResponseTrouble={setIsResponseTrouble} onSubmit={findMovies} setWereMoviesSearched={setWereMoviesSearched} />
 
-            {wereMoviesSearched ? (filmsToShow.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} /> : <NothingFound />) : (isResponseTrouble && MOVIES_SERVER_ERROR_MESSAGE)} 
+            {wereMoviesSearched ? (filmsToShow.length > 0 ? <MoviesCardList filmsToShow={filmsToShow} setSavedMovies={setSavedMovies} savedMovies={savedMovies} setIsLoading={setIsLoading} /> : <NothingFound />) : (isResponseTrouble && MOVIES_SERVER_ERROR_MESSAGE)} 
 
             { moreOn && <More handleMoreButtonClick={handleMoreButtonClick}/> }
             <Footer/>

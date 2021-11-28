@@ -4,22 +4,21 @@ import { useLocation } from 'react-router-dom';
 import saveFilmButton from '../../images/saveFilmButton.svg';
 import savedFilmButton from '../../images/savedFilmButton.svg';
 import removeSavedFilm from '../../images/removeSavedFilm.svg';
-import { handleFilmIsSaved, handleMovieToSave, deleteMovie } from '../../utils/MovieHandler';
+import { handleFilmIsSaved, handleMovieToSave, deleteMovie } from '../../utils/MovieHandlers';
+import { IMAGE_URL } from '../../utils/Constants'
 
-function MovieCard({ film, setSavedMovies, savedMovies }) {
+function MovieCard({ film, setSavedMovies, savedMovies, setIsLoading }) {
     const [isSaved, setIsSaved] = useState(false);
     
-
-    const BASE_URL = 'https://api.nomoreparties.co'
-    const imageUrl = `${BASE_URL}${film.image}`;
+    const imageUrl = `${IMAGE_URL}${film.image}`;
     const location = useLocation();
 
-    const handleMovieSaving = (e) => {
+    const handleMovieSaving = () => {
       if(location.pathname === "/movies") {
-        handleMovieToSave(film, setIsSaved, isSaved, setSavedMovies, savedMovies)
+        handleMovieToSave(film, setIsSaved, isSaved, setSavedMovies, savedMovies, setIsLoading)
       }
       if(location.pathname === "/saved-movies") {
-        deleteMovie(film, setSavedMovies);
+        deleteMovie(film, setSavedMovies, setIsLoading);
       }
     }
 
