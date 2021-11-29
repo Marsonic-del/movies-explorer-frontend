@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
+import { email } from "@sideway/address";
 
 //хук управления формой
 export function useForm() {
@@ -19,8 +20,10 @@ export function useFormWithValidation() {
   const [values, setValues] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
+
   const regex = /[^a-zA-Z\s\-\u0400-\u04FF]+/
-  let message = 'Поле может содержать только кириллицу, латиницу, пробел, дефис';
+  const message = 'Поле может содержать только кириллицу, латиницу, пробел, дефис';
+  const emailErrorMessage = 'Ошибка: некорректный email';
 
   const handleChange = (event) => {
     const target = event.target;
@@ -34,7 +37,11 @@ export function useFormWithValidation() {
     if(name === 'name') {
       regex.test(value) && setErrors({...errors, [name]: message });
       setIsValid(target.closest("form").checkValidity() && !regex.test(value));
-    } 
+    };
+    if(name === 'email') {
+      !email.isValid(value) && setErrors({...errors, [name]: emailErrorMessage });
+      setIsValid(target.closest("form").checkValidity() && email.isValid(value));
+    }; 
   };
   
 
