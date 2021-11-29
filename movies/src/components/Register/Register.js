@@ -18,7 +18,9 @@ function Register({ onRegister, isLoading, isResponseTrouble, infoMessage }) {
     return (
       <section className="register">
         <Preloader isFetching={isLoading} />
-        <img className="header__logo header__logo_block_register" alt="Логотип" src={logo} />
+        <Link to="/">
+          <img className="header__logo header__logo_block_register" alt="Логотип" src={logo} />
+        </Link>
         <h2 className="register__header">Добро пожаловать!</h2>
         <form className="form form__register" name="form" onSubmit={handleFormSubmit} noValidate>
           <label htmlFor="name-input" className="form__input-name form__input-name_block_register">Имя</label>

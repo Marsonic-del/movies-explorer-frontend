@@ -18,8 +18,10 @@ function Login({ onAuthorize, isLoading }) {
   
     return(
       <section className="login">
-       <Preloader isFetching={isLoading} />
-        <img className="header__logo header__logo_block_register" alt="Логотип" src={logo} />
+        <Preloader isFetching={isLoading} />
+        <Link to="/">
+          <img className="header__logo header__logo_block_register" alt="Логотип" src={logo} />
+        </Link>
         <h2 className="register__header">Рады видеть!</h2>
         <form className="form form__register" name="form" onSubmit={handleFormSubmit} noValidate>
           <label htmlFor="email-input" className="form__input-name form__input-name_block_register">E-mail</label>
