@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import './Register.css';
 import logo from '../../images/headerLogo.png'
 import Preloader from '../Preloader/Preloader';
 import { useFormWithValidation } from '../../utils/FormValidator';
 
-function Register({ onRegister, isLoading, isResponseTrouble, infoMessage }) {
+function Register({ onRegister, isLoading, isResponseTrouble, infoMessage, loggedIn }) {
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
 
@@ -16,6 +16,7 @@ function Register({ onRegister, isLoading, isResponseTrouble, infoMessage }) {
   }
 };
     return (
+      loggedIn ? <Redirect to="/movies" /> :
       <section className="register">
         <Preloader isFetching={isLoading} />
         <Link to="/">

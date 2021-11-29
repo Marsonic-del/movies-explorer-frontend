@@ -241,10 +241,10 @@ function App() {
                   <Main />
                 </Route>
                 <Route path="/signin">
-                  <Login onAuthorize={handleAuthorize} isLoading={isLoading} />
+                  <Login onAuthorize={handleAuthorize} isLoading={isLoading} loggedIn={loggedIn} />
                 </Route>
                 <Route path="/signup">
-                  <Register onRegister={handleRegister} isLoading={isLoading} isResponseTrouble={isResponseTrouble} infoMessage={infoMessage} />
+                  <Register onRegister={handleRegister} isLoading={isLoading} isResponseTrouble={isResponseTrouble} infoMessage={infoMessage} loggedIn={loggedIn} />
                 </Route>
                 <Route path="*">
                   <Page404/>
