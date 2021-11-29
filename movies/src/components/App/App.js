@@ -164,6 +164,8 @@ function App() {
   }
  
   // На случай если авторизация происходит когда пользователь не вышел с аккаунта
+  //P.S. Хотя это уже не обязательно ведь роуты signin, signup защищенны от входа
+  // на них авторизованого пользователя
   const removeDataBeforeAuth = () => {
     setLoggedIn(false);
     localStorage.removeItem('jwt');
