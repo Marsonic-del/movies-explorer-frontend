@@ -13,9 +13,9 @@ function SavedMovies({ savedMovies, setSavedMovies, isShortFilm, setIsShortFilm,
     const [filteredFilms, setFilteredFilms] = useState(null);
     const [filmsToShow, setFilmsToShow] = useState([]);
 
-    const handleSearchSavedMovies = (e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, movies) => {
+    const handleSearchSavedMovies = (e, dataObj) => {
         e.preventDefault();
-        handleSearch(movies, setFilteredFilms, value)
+        handleSearch(dataObj.movies, dataObj.setFilteredFilms, dataObj.value)
     };
 
     React.useEffect(() => {

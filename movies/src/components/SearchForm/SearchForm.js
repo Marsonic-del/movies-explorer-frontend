@@ -12,11 +12,13 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
     setValue(e.target.value)
   }
 
+  const dataObj = {setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, movies, setIsRequestSending}
+
   function handleSubmit(e) {
     e.preventDefault();
     if(value.length > 0) {
       setErrorSearch(false);
-      onSubmit(e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, movies, setIsRequestSending);
+      onSubmit(e, dataObj);
     }
     else {
       setErrorSearch(true);
@@ -29,7 +31,7 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
               <div className="search__line">
                 <div className="search-wrapper">
                   <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" value={value} required minLength="1" disabled={isRequestSending} />
-                  <button type="submit" className="search__button" aria-label="Найти" >Найти</button>
+                  <button type="submit" className="search__button" aria-label="Найти" disabled={isRequestSending} >Найти</button>
                 </div>
                 <span className="form__error">{errorSearch && errorMessage}</span>
               </div>

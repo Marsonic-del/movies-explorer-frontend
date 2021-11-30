@@ -16,8 +16,8 @@ function Movies({ movies, setMovies, isShortFilm, setIsShortFilm, savedMovies, s
     const [filmsToShow, setFilmsToShow] = useState([]);
     const [moreOn, setMoreOn] = useState(false);
 
-    function findMovies(e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, setIsRequestSending) {
-        handleSearchMovies(e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, setIsRequestSending);
+    function findMovies(e, dataObj) {
+        handleSearchMovies(e, dataObj.setFilteredFilms, dataObj.value, dataObj.setIsResponseTrouble, dataObj.setIsLoading, dataObj.setWereMoviesSearched, dataObj.setIsRequestSending);
       };
 
     const handleMoreButtonClick = () => {

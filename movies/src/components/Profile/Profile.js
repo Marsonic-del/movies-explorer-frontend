@@ -8,6 +8,7 @@ import { useFormWithValidation } from '../../utils/FormValidator';
 function Profile({ onUpdateUser, onExit, isLoading }) {
   const currentUser = React.useContext(currentUserContext);
   const [isDataEdited, setIsDataEdited] = useState(false);
+  const [isRequestSending, setIsRequestSending] = useState(false);
   const nameRef = React.useRef();
   const emailRef = React.useRef();
   const FormWithValidation = useFormWithValidation();
@@ -31,7 +32,7 @@ function Profile({ onUpdateUser, onExit, isLoading }) {
         name: !values.name ? nameRef.current.value : values.name,
         email: !values.email ? emailRef.current.value : values.email,
       };
-      onUpdateUser(userData);
+      onUpdateUser(userData, setIsRequestSending);
     }
   };
 

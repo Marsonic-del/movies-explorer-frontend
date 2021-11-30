@@ -99,9 +99,10 @@ function App() {
     }
   };
 
-  function handleAuthorize(password, email) {
+  function handleAuthorize(password, email, setIsRequestSending) {
     removeDataBeforeAuth();
-    setIsLoading(true)
+    setIsLoading(true);
+    setIsRequestSending(true);
     mainApi.authorize(password, email)
       .then((data) => {
         if(data.token && data.userData) {
@@ -123,12 +124,16 @@ function App() {
           setIsInfoPopupOpen(true)
         } )
       })
-      .finally(() => {setIsLoading(false)})
+      .finally(() => {
+        setIsRequestSending(false);
+        setIsLoading(false);
+      })
   }
 
-  const handleRegister = (name, password,email) => {
+  const handleRegister = (name, password,email, setIsRequestSending) => {
     setIsLoading(true);
     setIsResponseTrouble(false);
+    setIsRequestSending(true);
     mainApi.register(name, password,email)
     .then(res => {
       if(res) {
@@ -141,13 +146,17 @@ function App() {
         setInfoMessage(err.message);
       })
     })
-    .finally(() => {setIsLoading(false)})
+    .finally(() => {
+      setIsRequestSending(false);
+      setIsLoading(false);
+    })
   }
 
-  const handleUpdateUser = (data) => {
+  const handleUpdateUser = (data, setIsRequestSending) => {
     setIsLoading(true);
     setIsResponseTrouble(false);
     const token = localStorage.getItem('jwt')
+    setIsRequestSending(true);
     mainApi.editProfile(data, token)
       .then(data => {
         setCurrentUser({ name: data.userData.name, email: data.userData.email });
@@ -160,7 +169,10 @@ function App() {
         setIsResponseTrouble(true);
         setIsInfoPopupOpen(true);
       })
-      .finally(() => {setIsLoading(false)})
+      .finally(() => {
+        setIsRequestSending(false);
+        setIsLoading(false)
+      })
   }
  
   // На случай если авторизация происходит когда пользователь не вышел с аккаунта
