@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './SearchForm.css';
-import { useFormWithValidation } from '../../utils/FormValidator';
 
 function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, setIsLoading, onSubmit, setIsResponseTrouble, setWereMoviesSearched }) {
 
-  const FormWithValidation = useFormWithValidation();
-  const { values, handleChange, errors, isValid } = FormWithValidation;
+  const [value, setValue] = useState('');
+  const [errorSearch, setErrorSearch] = useState(false);
+  const errorMessage = "Нужно ввести ключевое слово";
+
+  const handleChange = (e) => {
+    setValue(e.target.value)
+  }
 
   function handleSubmit(e) {
-    onSubmit(e, setFilteredFilms, values.movie, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, movies);
+    e.preventDefault();
+    if(value.length > 0) {
+      setErrorSearch(false);
+      onSubmit(e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, movies);
+    }
+    else {
+      setErrorSearch(true);
+    }
   };
 
     return(
@@ -16,10 +27,10 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
            <form className="search__form" onSubmit={handleSubmit} noValidate>
               <div className="search__line">
                 <div className="search-wrapper">
-                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" required minLength="1" />
-                  <button type="submit" className="search__button" aria-label="Найти" disabled={!isValid}>Найти</button>
+                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" value={value} required minLength="1" />
+                  <button type="submit" className="search__button" aria-label="Найти" >Найти</button>
                 </div>
-                <span className="form__error">{errors.movie}</span>
+                <span className="form__error">{errorSearch && errorMessage}</span>
               </div>
             </form>
             <div className="search__checkbox">
