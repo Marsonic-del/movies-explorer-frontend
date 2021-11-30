@@ -44,6 +44,7 @@ function App() {
       loggedIn && localStorage.setItem('storedSavedMovies', JSON.stringify(savedMovies));
       loggedIn && localStorage.setItem('userData', JSON.stringify(currentUser));
       loggedIn && localStorage.setItem('wereMoviesSearched', wereMoviesSearched);
+      loggedIn && localStorage.setItem('isShortFilm', isShortFilm);
     }
     
     window.addEventListener('resize', handleWindowResize);
@@ -54,7 +55,7 @@ function App() {
       window.removeEventListener('resize', handleWindowResize)
       window.removeEventListener('beforeunload', handleStoredMovies)
     }
-  }, [currentUser, movies, loggedIn, wereMoviesSearched, savedMovies]);
+  }, [currentUser, movies, loggedIn, wereMoviesSearched, savedMovies, isShortFilm]);
 
   useEffect(() => {
     const films = localStorage.getItem('storedMovies');
@@ -64,6 +65,10 @@ function App() {
     }
     if(wereFilmsSearched) {
       JSON.parse(wereFilmsSearched) && setWereMoviesSearched(true);
+    }
+    const isShortMovie = localStorage.getItem('isShortFilm');
+    if(isShortMovie) {
+      setIsShortFilm(JSON.parse(isShortMovie));
     }
   }, []);
 
@@ -186,6 +191,8 @@ function App() {
     localStorage.removeItem('storedSavedMovies');
     localStorage.removeItem('userData');
     localStorage.removeItem('wereMoviesSearched');
+    localStorage.removeItem('isShortFilm');
+    localStorage.removeItem('inputValue');
     setCurrentUser({})
     setMovies([])
     setSavedMovies([])

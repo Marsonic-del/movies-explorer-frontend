@@ -1,34 +1,33 @@
 import MoviesApi from './MoviesApi';
 import { removeMovie, saveMovie, getSavedMovies } from './MainApi';
-import { MOVIES_API_ADDRESS, DEFUALT_ERROR_MESSAGE } from './Constants'
+import { MOVIES_API_ADDRESS, DEFUALT_ERROR_MESSAGE, FILM_COUNTER_WIDTH_480, FILM_COUNTER_WIDTH_768, FILM_COUNTER_WIDTH_1280, FILM_ROW_WIDTH_480, FILM_ROW_WIDTH_768, FILM_ROW_WIDTH_1280, SHORT_FILM_DURATION } from './Constants'
 
 const moviesApi = new MoviesApi({address: MOVIES_API_ADDRESS})
 
 const movieCounter = () => {
     if(window.innerWidth <= 480) {
         return {
-            filmCounter: 5,
-            filmRow: 2
+            filmCounter: FILM_COUNTER_WIDTH_480,
+            filmRow: FILM_ROW_WIDTH_480
         }
     }
     if((window.innerWidth > 480) &&  (window.innerWidth <= 768)) {
         return {
-            filmCounter: 8,
-            filmRow: 2
+            filmCounter: FILM_COUNTER_WIDTH_768,
+            filmRow: FILM_ROW_WIDTH_768
         }
     }
     else {
         return {
-            filmCounter: 12,
-            filmRow: 3
+            filmCounter: FILM_COUNTER_WIDTH_1280,
+            filmRow: FILM_ROW_WIDTH_1280
         }
     }
 }
 
 export const handleFilmsToShow = (filteredFilms, setFilmsToShow, setMoreOn, isShortFilm) => {
     const { filmCounter } = movieCounter();
-    const shortFilmDuration = 40;
-    const shortFilms = filteredFilms.filter(film => film.duration <= shortFilmDuration);
+    const shortFilms = filteredFilms.filter(film => film.duration <= SHORT_FILM_DURATION);
     const filmsToShow = isShortFilm ? shortFilms : filteredFilms;
 
     if(filmsToShow.length <= filmCounter) {
@@ -43,8 +42,7 @@ export const handleFilmsToShow = (filteredFilms, setFilmsToShow, setMoreOn, isSh
 
 export const handleMoreClick = (filmsToShow, filteredFilms, setFilmsToShow, setMoreOn, isShortFilm) => {
     const { filmRow } = movieCounter();
-    const shortFilmDuration = 40;
-    const shortFilms = filteredFilms.filter(film => film.duration <= shortFilmDuration);
+    const shortFilms = filteredFilms.filter(film => film.duration <= SHORT_FILM_DURATION);
     const moviesToShow = isShortFilm ? shortFilms : filteredFilms
 
     if((filmsToShow.length + filmRow) < moviesToShow.length) {
@@ -111,10 +109,9 @@ export const handleFilmIsSaved = (film, savedMovies, setIsSaved) => {
 };
 
 export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, setFilmsToShow) => {
-    const shortFilmDuration = 40;
     if(filteredFilms) {
         if(isShortFilm) {
-            const shortFilms = filteredFilms.filter(film => film.duration <= shortFilmDuration);
+            const shortFilms = filteredFilms.filter(film => film.duration <= SHORT_FILM_DURATION);
             setFilmsToShow(shortFilms);
         }
         else {
@@ -123,7 +120,7 @@ export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, 
     }
     else {
         if(isShortFilm) {
-            const shortFilms = savedMovies.filter(film => film.duration <= shortFilmDuration);
+            const shortFilms = savedMovies.filter(film => film.duration <= SHORT_FILM_DURATION);
             setFilmsToShow(shortFilms);
         }
         else {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect,  } from 'react';
 import './SearchForm.css';
 
 function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, setIsLoading, onSubmit, setIsResponseTrouble, setWereMoviesSearched }) {
@@ -7,6 +7,11 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
   const [errorSearch, setErrorSearch] = useState(false);
   const [isRequestSending, setIsRequestSending] = useState(false);
   const errorMessage = "Нужно ввести ключевое слово";
+
+  useEffect(() => {
+    const inputValue = localStorage.getItem('inputValue');
+    inputValue && setValue(inputValue);
+  }, []);
 
   const handleChange = (e) => {
     setValue(e.target.value)
@@ -18,10 +23,12 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
     e.preventDefault();
     if(value.length > 0) {
       setErrorSearch(false);
+      localStorage.setItem('inputValue', value);
       onSubmit(e, dataObj);
     }
     else {
       setErrorSearch(true);
+      
     }
   };
 
@@ -30,7 +37,7 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
            <form className="search__form" onSubmit={handleSubmit} noValidate>
               <div className="search__line">
                 <div className="search-wrapper">
-                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" value={value} required minLength="1" disabled={isRequestSending} />
+                  <input type="text" autoFocus onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" value={value} required minLength="1" disabled={isRequestSending} />
                   <button type="submit" className="search__button" aria-label="Найти" disabled={isRequestSending} >Найти</button>
                 </div>
                 <span className="form__error">{errorSearch && errorMessage}</span>

@@ -46,7 +46,7 @@ function Profile({ onUpdateUser, onExit, isLoading }) {
             <div className="form__input-box">
               <div className="form-input-wrapper">
                 <label htmlFor="name-input" className="form__input-name">Имя</label>
-                <input id="name-input" ref={nameRef} onChange={handleEdit} type="text" placeholder="Имя" className="form__input" name="name" required minLength="2"  maxLength="40" defaultValue={currentUser.name}/>
+                <input id="name-input" ref={nameRef} onChange={handleEdit} type="text" placeholder="Имя" className="form__input" name="name" disabled={isRequestSending} required minLength="2"  maxLength="40" defaultValue={currentUser.name}/>
               </div>
               <span className="form__error name-input-error">{errors.name}</span>
             </div>
@@ -54,12 +54,12 @@ function Profile({ onUpdateUser, onExit, isLoading }) {
              <div className="form__input-box">
                <div className="form-input-wrapper">
                  <label htmlFor="email-input" className="form__input-name">Email</label>
-                 <input id="email-input" ref={emailRef}  type="email" onChange={handleEdit} placeholder="Email" className="form__input" name="email" required minLength="2" maxLength="30" defaultValue={currentUser.email}/>
+                 <input id="email-input" ref={emailRef}  type="email" onChange={handleEdit} placeholder="Email" className="form__input" name="email" disabled={isRequestSending} required minLength="2" maxLength="30" defaultValue={currentUser.email}/>
                </div>
               <span className="form__error">{errors.email}</span>
              </div>
 
-            <button type="submit" className="form__button form__button_component_profile" disabled={!isValid || !isDataEdited}>Редактировать
+            <button type="submit" className="form__button form__button_component_profile" disabled={!isValid || !isDataEdited || isRequestSending}>Редактировать
             </button>
             <button type="button" onClick={(e) => {onExit(e)}} className="form__link-button form__link-button_type_logout">Выйти из аккаунта
             </button>
