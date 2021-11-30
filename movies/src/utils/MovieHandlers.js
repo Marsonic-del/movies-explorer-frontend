@@ -1,6 +1,6 @@
 import MoviesApi from './MoviesApi';
 import { removeMovie, saveMovie, getSavedMovies } from './MainApi';
-import { MOVIES_API_ADDRESS } from './Constants'
+import { MOVIES_API_ADDRESS, DEFUALT_ERROR_MESSAGE } from './Constants'
 
 const moviesApi = new MoviesApi({address: MOVIES_API_ADDRESS})
 
@@ -61,7 +61,7 @@ export const handleSearch = (movies, setFilteredFilms, value) => {
     setFilteredFilms(searchedFilms);
 };
 
-export const handleSearchMovies = (e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched) => {
+export const handleSearchMovies = (e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, setIsRequestSending) => {
     e.preventDefault();
     setIsLoading(true);
     setIsResponseTrouble(false);
@@ -72,6 +72,7 @@ export const handleSearchMovies = (e, setFilteredFilms, value, setIsResponseTrou
         setIsLoading(false);
     }
     else {
+        setIsRequestSending(true);
         moviesApi.getInitialMovies()
           .then(initialMovies => {
             const transformedMovies = transformMovies(initialMovies);
@@ -82,7 +83,10 @@ export const handleSearchMovies = (e, setFilteredFilms, value, setIsResponseTrou
             setIsResponseTrouble(true);
             setWereMoviesSearched(false);
           })
-          .finally(() => setIsLoading(false))
+          .finally(() => {
+              setIsLoading(false);
+              setIsRequestSending(false);
+            })
     }
 }
 // Данные с сервера с фильмами приходят немного отличными от тех что сохраняются
@@ -128,7 +132,7 @@ export const handleSavedFilmsToShow = (filteredFilms, savedMovies, isShortFilm, 
     }
 };
 
-export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, savedMovies, setIsLoading) => {
+export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, savedMovies, setIsLoading, setIsInfoPopupOpen, setInfoMessage) => {
     const token = localStorage.getItem('jwt');
     if(isSaved) {
       const movieToRemove = savedMovies.find(f => f.movieId === film.movieId)
@@ -148,7 +152,11 @@ export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, sav
               saveMovies(token, setSavedMovies, setIsSaved)
               }
           })
-          .catch(err => console.log(err))
+          .catch(err => {
+            const message = "Ошибка 400. Заполните поля Имя и Email";
+            setInfoMessage(DEFUALT_ERROR_MESSAGE);
+            setIsInfoPopupOpen(true);
+          })
           .finally(() => setIsLoading(false))
     }
 };

@@ -218,6 +218,8 @@ function App() {
                     isResponseTrouble={isResponseTrouble}
                     setIsResponseTrouble={setIsResponseTrouble}
                     setIsLoading={setIsLoading}
+                    setIsInfoPopupOpen={setIsInfoPopupOpen}
+                    setInfoMessage={setInfoMessage}
                 />
                 <ProtectedRoute
                     path="/saved-movies"

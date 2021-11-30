@@ -7,7 +7,7 @@ import removeSavedFilm from '../../images/removeSavedFilm.svg';
 import { handleFilmIsSaved, handleMovieToSave, deleteMovie } from '../../utils/MovieHandlers';
 import { IMAGE_URL } from '../../utils/Constants'
 
-function MovieCard({ film, setSavedMovies, savedMovies, setIsLoading }) {
+function MovieCard({ film, setSavedMovies, savedMovies, setIsLoading, setIsInfoPopupOpen, setInfoMessage }) {
     const [isSaved, setIsSaved] = useState(false);
     
     const imageUrl = `${IMAGE_URL}${film.image}`;
@@ -15,7 +15,7 @@ function MovieCard({ film, setSavedMovies, savedMovies, setIsLoading }) {
 
     const handleMovieSaving = () => {
       if(location.pathname === "/movies") {
-        handleMovieToSave(film, setIsSaved, isSaved, setSavedMovies, savedMovies, setIsLoading)
+        handleMovieToSave(film, setIsSaved, isSaved, setSavedMovies, savedMovies, setIsLoading, setIsInfoPopupOpen, setInfoMessage)
       }
       if(location.pathname === "/saved-movies") {
         deleteMovie(film, setSavedMovies, setIsLoading);

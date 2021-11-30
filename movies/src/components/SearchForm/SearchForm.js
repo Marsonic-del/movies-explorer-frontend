@@ -5,6 +5,7 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
 
   const [value, setValue] = useState('');
   const [errorSearch, setErrorSearch] = useState(false);
+  const [isRequestSending, setIsRequestSending] = useState(false);
   const errorMessage = "Нужно ввести ключевое слово";
 
   const handleChange = (e) => {
@@ -15,7 +16,7 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
     e.preventDefault();
     if(value.length > 0) {
       setErrorSearch(false);
-      onSubmit(e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, movies);
+      onSubmit(e, setFilteredFilms, value, setIsResponseTrouble, setIsLoading, setWereMoviesSearched, movies, setIsRequestSending);
     }
     else {
       setErrorSearch(true);
@@ -27,7 +28,7 @@ function SearchForm({ setFilteredFilms, setIsShortFilm, isShortFilm, movies, set
            <form className="search__form" onSubmit={handleSubmit} noValidate>
               <div className="search__line">
                 <div className="search-wrapper">
-                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" value={value} required minLength="1" />
+                  <input type="text" onChange={handleChange} name="movie" placeholder="Фильм" className="search__input" value={value} required minLength="1" disabled={isRequestSending} />
                   <button type="submit" className="search__button" aria-label="Найти" >Найти</button>
                 </div>
                 <span className="form__error">{errorSearch && errorMessage}</span>
