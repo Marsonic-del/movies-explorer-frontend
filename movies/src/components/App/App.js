@@ -142,7 +142,7 @@ function App() {
     mainApi.register(name, password,email)
     .then(res => {
       if(res) {
-        handleAuthorize(password, email)
+        handleAuthorize(password, email, setIsRequestSending)
       }
     })
     .catch(err => {

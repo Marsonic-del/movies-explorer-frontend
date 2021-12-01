@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import './Register.css';
 import logo from '../../images/headerLogo.png'
 import Preloader from '../Preloader/Preloader';
@@ -9,6 +9,11 @@ function Register({ onRegister, isLoading, isResponseTrouble, infoMessage, logge
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
   const [isRequestSending, setIsRequestSending] = useState(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    loggedIn && history.push('/movies')
+  });
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -17,7 +22,6 @@ function Register({ onRegister, isLoading, isResponseTrouble, infoMessage, logge
   }
 };
     return (
-      loggedIn ? <Redirect to="/movies" /> :
       <section className="register">
         <Preloader isFetching={isLoading} />
         <Link to="/">

@@ -18,7 +18,7 @@ function MovieCard({ film, setSavedMovies, savedMovies, setIsLoading, setIsInfoP
         handleMovieToSave(film, setIsSaved, isSaved, setSavedMovies, savedMovies, setIsLoading, setIsInfoPopupOpen, setInfoMessage)
       }
       if(location.pathname === "/saved-movies") {
-        deleteMovie(film, setSavedMovies, setIsLoading);
+        deleteMovie(film, setSavedMovies, setIsLoading, setIsInfoPopupOpen, setInfoMessage);
       }
     }
 

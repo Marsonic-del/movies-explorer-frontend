@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import './Login.css';
 import logo from '../../images/headerLogo.png'
 import Preloader from '../Preloader/Preloader';
@@ -9,6 +9,11 @@ function Login({ onAuthorize, isLoading, loggedIn }) {
   const FormWithValidation = useFormWithValidation();
   const { values, handleChange, errors, isValid } = FormWithValidation;
   const [isRequestSending, setIsRequestSending] = useState(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    loggedIn && history.push('/movies')
+  });
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +23,6 @@ function Login({ onAuthorize, isLoading, loggedIn }) {
   };
   
     return(
-      loggedIn ? <Redirect to="/movies" /> :
       <section className="login">
         <Preloader isFetching={isLoading} />
         <Link to="/">

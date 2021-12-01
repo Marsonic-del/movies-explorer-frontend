@@ -136,9 +136,13 @@ export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, sav
       setIsLoading(true);
       removeMovie(movieToRemove._id, token)
         .then(res => {
-          saveMovies(token, setSavedMovies, setIsSaved)
+          setIsSaved(false);
+          saveMovies(token, setSavedMovies, setIsInfoPopupOpen, setInfoMessage)
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            setInfoMessage(DEFUALT_ERROR_MESSAGE);
+            setIsInfoPopupOpen(true);
+        })
         .finally(() => setIsLoading(false))
     }
     else {
@@ -146,11 +150,11 @@ export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, sav
         saveMovie(film, token)
           .then((res) => {
             if(res) {
-              saveMovies(token, setSavedMovies, setIsSaved)
+              setIsSaved(true);  
+              saveMovies(token, setSavedMovies, setIsInfoPopupOpen, setInfoMessage)
               }
           })
           .catch(err => {
-            const message = "Ошибка 400. Заполните поля Имя и Email";
             setInfoMessage(DEFUALT_ERROR_MESSAGE);
             setIsInfoPopupOpen(true);
           })
@@ -158,20 +162,25 @@ export const handleMovieToSave = (film, setIsSaved, isSaved, setSavedMovies, sav
     }
 };
 
-const saveMovies = (token, setSavedMovies, setIsSaved) => {
+const saveMovies = (token, setSavedMovies, setIsInfoPopupOpen, setInfoMessage) => {
     getSavedMovies(token)
       .then((movies) => {
-        setSavedMovies(movies.data)
-        setIsSaved(false);
+        setSavedMovies(movies.data);
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        setInfoMessage(DEFUALT_ERROR_MESSAGE);
+        setIsInfoPopupOpen(true);
+      })
 }
 
-  export const deleteMovie = (film, setSavedMovies, setIsLoading) => {
+  export const deleteMovie = (film, setSavedMovies, setIsLoading, setIsInfoPopupOpen, setInfoMessage) => {
     const token = localStorage.getItem('jwt');
     setIsLoading(true);
     removeMovie(film._id, token)
-      .then(() => saveMovies(token, setSavedMovies))
-      .catch(err => console.log(err))
+      .then(() => saveMovies(token, setSavedMovies, setIsInfoPopupOpen, setInfoMessage))
+      .catch(err => {
+        setInfoMessage(DEFUALT_ERROR_MESSAGE, ' при удалении фильма');
+        setIsInfoPopupOpen(true);
+      })
       .finally(() => setIsLoading(false))
   }
