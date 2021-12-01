@@ -1,0 +1,12 @@
+export const DEFUALT_ERROR_MESSAGE = 'Что-то пошло не так.';
+export const MOVIES_SERVER_ERROR_MESSAGE = 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз';
+export const BASE_URL = 'https://za-kulisami.nomoredomains.monster';
+export const IMAGE_URL = 'https://api.nomoreparties.co';
+export const MOVIES_API_ADDRESS = 'https://api.nomoreparties.co/beatfilm-movies';
+export const FILM_COUNTER_WIDTH_480 = 5;
+export const FILM_ROW_WIDTH_480 = 2;
+export const FILM_COUNTER_WIDTH_768 = 8;
+export const FILM_ROW_WIDTH_768 = 2;
+export const FILM_COUNTER_WIDTH_1280 = 12;
+export const FILM_ROW_WIDTH_1280 = 3;
+export const SHORT_FILM_DURATION = 40;

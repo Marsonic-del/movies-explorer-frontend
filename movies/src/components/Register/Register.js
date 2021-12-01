@@ -1,0 +1,53 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import './Register.css';
+import logo from '../../images/headerLogo.png'
+import Preloader from '../Preloader/Preloader';
+import { useFormWithValidation } from '../../utils/FormValidator';
+
+function Register({ onRegister, isLoading, isResponseTrouble, infoMessage, loggedIn }) {
+  const FormWithValidation = useFormWithValidation();
+  const { values, handleChange, errors, isValid } = FormWithValidation;
+  const [isRequestSending, setIsRequestSending] = useState(false);
+  const history = useHistory();
+
+  useEffect(() => {
+    loggedIn && history.push('/movies')
+  });
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+        if(isValid) {
+            onRegister(values.name, values.password, values.email, setIsRequestSending)
+  }
+};
+    return (
+      <section className="register">
+        <Preloader isFetching={isLoading} />
+        <Link to="/">
+          <img className="header__logo header__logo_block_register" alt="Логотип" src={logo} />
+        </Link>
+        <h2 className="register__header">Добро пожаловать!</h2>
+        <form className="form form__register" name="form" onSubmit={handleFormSubmit} noValidate>
+          <label htmlFor="name-input" className="form__input-name form__input-name_block_register">Имя</label>
+          <input id="name-input"  onChange={handleChange} type="text" placeholder="Имя" className="form__input form__input_block_register" name="name" disabled={isRequestSending} required minLength="2"  maxLength="40"/>
+          <span className="form__error name-input-error">{errors.name}</span>
+
+          <label htmlFor="email-input" className="form__input-name form__input-name_block_register">E-mail</label>
+          <input id="email-input"  type="email"  onChange={handleChange} placeholder="E-mail" className="form__input form__input_block_register" name="email" disabled={isRequestSending} required minLength="2" maxLength="30"/>
+          <span className="form__error">{errors.email}</span>
+           
+          <label htmlFor="password-input" className="form__input-name form__input-name_block_register">Пароль</label>
+          <input id="password-input"  type="password"  onChange={handleChange} placeholder="Пароль" className="form__input form__input_block_register" name="password" disabled={isRequestSending} required minLength="8"/>
+          <span className="form__error">{errors.password}</span>
+           
+          {isResponseTrouble && <span className={`form__error ${isResponseTrouble && "form__error-button-register"}`}>{infoMessage}</span>}
+          <button className={`form__button ${isResponseTrouble && "form__button-register"}`} type="submit" disabled={!isValid || isRequestSending}>Зарегистрироваться</button>
+        </form>
+        <Link className="form__link form__link_type_login" to="/signin" >Уже зарегистрированы? <span className="form__link-enter">Войти</span>
+        </Link>
+      </section>
+    );
+}
+
+export default Register;
